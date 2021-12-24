@@ -1,0 +1,10 @@
+overwrite: true
+schema: schema.graphql
+documents: ./**/*.test.ts
+generates:
+  ./tests/generated/types.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+pluckConfig:
+  gqlMagicComment: gql

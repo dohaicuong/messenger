@@ -1,0 +1,40 @@
+{
+  "name": "frontend",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "schema": "cp ../backend/schema.graphql ./",
+    "relay": "relay-compiler"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@mui/icons-material": "^5.2.5",
+    "@mui/material": "^5.2.5",
+    "notistack": "^2.0.3",
+    "react": "^18.0.0-beta-24dd07bd2-20211208",
+    "react-dom": "^18.0.0-beta-24dd07bd2-20211208",
+    "react-error-boundary": "^3.1.4",
+    "react-hook-form": "^7.22.5",
+    "react-relay": "^12.0.0",
+    "react-relay-network-modern": "^6.2.1",
+    "react-router-dom": "6",
+    "relay-runtime": "^12.0.0",
+    "vite-plugin-relay": "^1.0.7"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.33",
+    "@types/react-dom": "^17.0.10",
+    "@types/react-relay": "^11.0.3",
+    "@types/relay-runtime": "^12.0.1",
+    "@vitejs/plugin-react": "^1.0.7",
+    "graphql": "^15.8.0",
+    "relay-compiler": "^12.0.0",
+    "relay-compiler-language-typescript": "^15.0.0",
+    "relay-config": "^12.0.1",
+    "typescript": "^4.4.4",
+    "vite": "^2.7.2"
+  }
+}
