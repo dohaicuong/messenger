@@ -9,7 +9,7 @@ import {
 const network = new RelayNetworkLayer(
   [
     urlMiddleware({
-      url: (req) => Promise.resolve('http://127.0.0.1:4000/graphql'),
+      url: (req) => Promise.resolve(import.meta.env.VITE_API_ENDPOINT),
     }),
     authMiddleware({
       token: localStorage.getItem('jwt') || undefined,
