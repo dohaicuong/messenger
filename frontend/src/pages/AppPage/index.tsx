@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { useLazyLoadQuery, graphql } from 'react-relay'
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../../providers/auth'
@@ -27,7 +27,9 @@ const AppPage = () => {
   return (
     <>
       <Navbar userRef={data.me} />
-      <Outlet />
+      <Suspense fallback='Loading...'>
+        <Outlet />
+      </Suspense>
     </>
   )
 }
