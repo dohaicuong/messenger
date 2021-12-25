@@ -1,13 +1,34 @@
-import { Navigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useLazyLoadQuery, graphql } from 'react-relay'
+import { Navigate, Outlet } from 'react-router-dom'
 import { useAuth } from '../../providers/auth'
+import Navbar from './Navbar'
+import { AppPageQuery } from './__generated__/AppPageQuery.graphql'
 
 const AppPage = () => {
-  const { token } = useAuth()
+  const { token, signout } = useAuth()
+  const data = useLazyLoadQuery<AppPageQuery>(
+    graphql`
+      query AppPageQuery {
+        me {
+          ...NavbarFragment_user
+        }
+      }
+    `,
+    {}
+  )
 
-  if (!token) return <Navigate to='/' />
+  useEffect(() => {
+    if (!data.me) signout()
+  }, [data.me])
+
+  if (!token || !data.me) return <Navigate to='/' />
 
   return (
-    <>App</>
+    <>
+      <Navbar userRef={data.me} />
+      <Outlet />
+    </>
   )
 }
 

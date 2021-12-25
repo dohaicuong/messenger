@@ -13,6 +13,7 @@ interface Node {
 }
 
 type Query {
+  me: User
   node(id: ID!): Node
 }
 

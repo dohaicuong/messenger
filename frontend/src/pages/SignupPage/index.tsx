@@ -1,7 +1,7 @@
 import { Button, Container, Grid, Paper, Typography, Link } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
-import TextField from '../../components/TextField'
+import TextField from '../../common/TextField'
 import { Link as RouterLink, Navigate } from 'react-router-dom'
 import { useMutation, graphql } from 'react-relay'
 import { useAuth } from '../../providers/auth'

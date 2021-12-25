@@ -1,6 +1,6 @@
 import { Button, Container, Grid, Link, Paper, Typography } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
-import TextField from '../../components/TextField'
+import TextField from '../../common/TextField'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { Link as RouterLink, Navigate } from 'react-router-dom'
 import { useMutation, graphql } from 'react-relay'
