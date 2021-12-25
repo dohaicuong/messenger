@@ -1,8 +1,6 @@
 import { extendType, inputObjectType, nonNull, objectType } from 'nexus'
 import { compare } from 'bcrypt'
-import { signJwt } from '../../helpers/signJwt'
-import mercurius from 'mercurius'
-const { ErrorWithProps } = mercurius
+import { signJwt } from '../../helpers/jwt'
 
 export const UserLoginInput = inputObjectType({
   name: 'UserLoginInput',
@@ -33,10 +31,8 @@ export const UserLoginMutation = extendType({
         const isMatch = await compare(input.password, user.password)
         if (!isMatch) throw new Error('wrong password!')
 
-        // sign jwt
         const token = signJwt({ sub: user.id })
 
-        // return
         return {
           jwt: token,
           user,

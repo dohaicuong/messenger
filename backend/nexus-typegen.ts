@@ -99,6 +99,7 @@ export interface NexusGenFieldTypes {
     signup: NexusGenRootTypes['UserSignupPayload']; // UserSignupPayload!
   }
   Query: { // field return type
+    me: NexusGenRootTypes['User'] | null; // User
     node: NexusGenRootTypes['Node'] | null; // Node
   }
   User: { // field return type
@@ -127,6 +128,7 @@ export interface NexusGenFieldTypeNames {
     signup: 'UserSignupPayload'
   }
   Query: { // field return type name
+    me: 'User'
     node: 'Node'
   }
   User: { // field return type name

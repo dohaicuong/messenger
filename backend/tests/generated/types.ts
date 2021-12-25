@@ -37,6 +37,7 @@ export type Node = {
 
 export type Query = {
   __typename?: 'Query';
+  me?: Maybe<User>;
   node?: Maybe<Node>;
 };
 
@@ -79,6 +80,26 @@ export type UserSignupPayload = {
   jwt: Scalars['String'];
   user: User;
 };
+
+export type MeNoJwtQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeNoJwtQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string } | null | undefined };
+
+export type MeInvalidJwtQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeInvalidJwtQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string } | null | undefined };
+
+export type MeFakeUserJwtQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeFakeUserJwtQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string } | null | undefined };
+
+export type MeValidUserJwtQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeValidUserJwtQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: string } | null | undefined };
 
 export type NonExistedEmailLoginMutationVariables = Exact<{
   input: UserLoginInput;

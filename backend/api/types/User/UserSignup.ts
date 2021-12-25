@@ -1,6 +1,6 @@
 import { extendType, inputObjectType, nonNull, objectType } from 'nexus'
 import bcrypt from 'bcrypt'
-import { signJwt } from '../../helpers/signJwt'
+import { signJwt } from '../../helpers/jwt'
 
 export const UserSignupInput = inputObjectType({
   name: 'UserSignupInput',
