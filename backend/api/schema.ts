@@ -7,7 +7,11 @@ import * as interfaces from './interfaces'
 import * as types from './types'
 
 export const schema = makeSchema({
-  types: [scalars, interfaces, types],
+  types: {
+    scalars,
+    interfaces,
+    types
+  },
   plugins: [
     connectionPlugin({
       disableBackwardPagination: true,

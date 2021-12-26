@@ -73,6 +73,12 @@ export interface NexusGenScalars {
 
 export interface NexusGenObjects {
   Mutation: {};
+  PageInfo: { // root type
+    endCursor?: string | null; // String
+    hasNextPage: boolean; // Boolean!
+    hasPreviousPage: boolean; // Boolean!
+    startCursor?: string | null; // String
+  }
   Query: {};
   Room: { // root type
     name?: string | null; // String
@@ -80,8 +86,16 @@ export interface NexusGenObjects {
   RoomAddUserPayload: { // root type
     participant?: NexusGenRootTypes['User'] | null; // User
   }
+  RoomConnection: { // root type
+    edges?: Array<NexusGenRootTypes['RoomEdge'] | null> | null; // [RoomEdge]
+    pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
+  }
   RoomCreatePayload: { // root type
     room?: NexusGenRootTypes['Room'] | null; // Room
+  }
+  RoomEdge: { // root type
+    cursor: string; // String!
+    node?: NexusGenRootTypes['Room'] | null; // Room
   }
   User: { // root type
     avatar?: string | null; // String
@@ -117,6 +131,12 @@ export interface NexusGenFieldTypes {
     roomCreate: NexusGenRootTypes['RoomCreatePayload'] | null; // RoomCreatePayload
     signup: NexusGenRootTypes['UserSignupPayload']; // UserSignupPayload!
   }
+  PageInfo: { // field return type
+    endCursor: string | null; // String
+    hasNextPage: boolean; // Boolean!
+    hasPreviousPage: boolean; // Boolean!
+    startCursor: string | null; // String
+  }
   Query: { // field return type
     me: NexusGenRootTypes['User'] | null; // User
     node: NexusGenRootTypes['Node'] | null; // Node
@@ -130,8 +150,16 @@ export interface NexusGenFieldTypes {
   RoomAddUserPayload: { // field return type
     participant: NexusGenRootTypes['User'] | null; // User
   }
+  RoomConnection: { // field return type
+    edges: Array<NexusGenRootTypes['RoomEdge'] | null> | null; // [RoomEdge]
+    pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
+  }
   RoomCreatePayload: { // field return type
     room: NexusGenRootTypes['Room'] | null; // Room
+  }
+  RoomEdge: { // field return type
+    cursor: string; // String!
+    node: NexusGenRootTypes['Room'] | null; // Room
   }
   User: { // field return type
     avatar: string | null; // String
@@ -139,6 +167,7 @@ export interface NexusGenFieldTypes {
     firstName: string; // String!
     id: string; // ID!
     lastName: string; // String!
+    rooms: NexusGenRootTypes['RoomConnection']; // RoomConnection!
   }
   UserLoginPayload: { // field return type
     jwt: string; // String!
@@ -160,6 +189,12 @@ export interface NexusGenFieldTypeNames {
     roomCreate: 'RoomCreatePayload'
     signup: 'UserSignupPayload'
   }
+  PageInfo: { // field return type name
+    endCursor: 'String'
+    hasNextPage: 'Boolean'
+    hasPreviousPage: 'Boolean'
+    startCursor: 'String'
+  }
   Query: { // field return type name
     me: 'User'
     node: 'Node'
@@ -173,8 +208,16 @@ export interface NexusGenFieldTypeNames {
   RoomAddUserPayload: { // field return type name
     participant: 'User'
   }
+  RoomConnection: { // field return type name
+    edges: 'RoomEdge'
+    pageInfo: 'PageInfo'
+  }
   RoomCreatePayload: { // field return type name
     room: 'Room'
+  }
+  RoomEdge: { // field return type name
+    cursor: 'String'
+    node: 'Room'
   }
   User: { // field return type name
     avatar: 'String'
@@ -182,6 +225,7 @@ export interface NexusGenFieldTypeNames {
     firstName: 'String'
     id: 'ID'
     lastName: 'String'
+    rooms: 'RoomConnection'
   }
   UserLoginPayload: { // field return type name
     jwt: 'String'
@@ -214,6 +258,12 @@ export interface NexusGenArgTypes {
   Query: {
     node: { // args
       id: string; // ID!
+    }
+  }
+  User: {
+    rooms: { // args
+      after?: string | null; // String
+      first: number; // Int!
     }
   }
 }

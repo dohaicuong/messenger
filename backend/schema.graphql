@@ -14,6 +14,31 @@ interface Node {
   id: ID!
 }
 
+"""
+PageInfo cursor, as defined in https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
+"""
+type PageInfo {
+  """
+  The cursor corresponding to the last nodes in edges. Null if the connection is empty.
+  """
+  endCursor: String
+
+  """
+  Used to indicate whether more edges exist following the set defined by the clients arguments.
+  """
+  hasNextPage: Boolean!
+
+  """
+  Used to indicate whether more edges exist prior to the set defined by the clients arguments.
+  """
+  hasPreviousPage: Boolean!
+
+  """
+  The cursor corresponding to the first nodes in edges. Null if the connection is empty.
+  """
+  startCursor: String
+}
+
 type Query {
   me: User
   node(id: ID!): Node
@@ -40,6 +65,18 @@ type RoomAddUserPayload {
   participant: User
 }
 
+type RoomConnection {
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
+  """
+  edges: [RoomEdge]
+
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
+  """
+  pageInfo: PageInfo!
+}
+
 input RoomCreateInput {
   name: String
   participantIds: [RelayId!]!
@@ -47,6 +84,14 @@ input RoomCreateInput {
 
 type RoomCreatePayload {
   room: Room
+}
+
+type RoomEdge {
+  """https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor"""
+  cursor: String!
+
+  """https://facebook.github.io/relay/graphql/connections.htm#sec-Node"""
+  node: Room
 }
 
 type User implements Node {
@@ -57,6 +102,13 @@ type User implements Node {
   """Relay ID"""
   id: ID!
   lastName: String!
+  rooms(
+    """Returns the elements in the list that come after the specified cursor"""
+    after: String
+
+    """Returns the first n elements from the list."""
+    first: Int!
+  ): RoomConnection!
 }
 
 input UserLoginInput {
