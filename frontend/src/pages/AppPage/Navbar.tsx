@@ -22,12 +22,10 @@ const Navbar: React.FC<NavbarProps> = ({ userRef }) => {
     userRef
   )
   
-  
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const open = Boolean(anchorEl)
   const handleOpenMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget)
   const handleCloseMenu = () => setAnchorEl(null)
-  
 
   return (
     <AppBar position='static'>

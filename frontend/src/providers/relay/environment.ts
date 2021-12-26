@@ -12,7 +12,9 @@ const network = new RelayNetworkLayer(
       url: (req) => Promise.resolve(import.meta.env.VITE_API_ENDPOINT),
     }),
     authMiddleware({
-      token: localStorage.getItem('jwt') || undefined,
+      token: (req) => {
+        return localStorage.getItem('jwt') || undefined
+      },
     }),
     // uploadMiddleware(),
   ],

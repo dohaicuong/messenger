@@ -8,6 +8,7 @@ import { FragmentRefs } from "relay-runtime";
 export type AppPageQueryVariables = {};
 export type AppPageQueryResponse = {
     readonly me: {
+        readonly id: string;
         readonly " $fragmentRefs": FragmentRefs<"NavbarFragment_user">;
     } | null;
 };
@@ -21,8 +22,8 @@ export type AppPageQuery = {
 /*
 query AppPageQuery {
   me {
-    ...NavbarFragment_user
     id
+    ...NavbarFragment_user
   }
 }
 
@@ -32,7 +33,15 @@ fragment NavbarFragment_user on User {
 }
 */
 
-const node: ConcreteRequest = {
+const node: ConcreteRequest = (function(){
+var v0 = {
+  "alias": null,
+  "args": null,
+  "kind": "ScalarField",
+  "name": "id",
+  "storageKey": null
+};
+return {
   "fragment": {
     "argumentDefinitions": [],
     "kind": "Fragment",
@@ -47,6 +56,7 @@ const node: ConcreteRequest = {
         "name": "me",
         "plural": false,
         "selections": [
+          (v0/*: any*/),
           {
             "args": null,
             "kind": "FragmentSpread",
@@ -73,6 +83,7 @@ const node: ConcreteRequest = {
         "name": "me",
         "plural": false,
         "selections": [
+          (v0/*: any*/),
           {
             "alias": null,
             "args": null,
@@ -86,13 +97,6 @@ const node: ConcreteRequest = {
             "kind": "ScalarField",
             "name": "avatar",
             "storageKey": null
-          },
-          {
-            "alias": null,
-            "args": null,
-            "kind": "ScalarField",
-            "name": "id",
-            "storageKey": null
           }
         ],
         "storageKey": null
@@ -100,13 +104,14 @@ const node: ConcreteRequest = {
     ]
   },
   "params": {
-    "cacheID": "9d649a4c382fe7380a892f6b2d07fda4",
+    "cacheID": "95d80118ec07b3a81d165b7b992d5ac5",
     "id": null,
     "metadata": {},
     "name": "AppPageQuery",
     "operationKind": "query",
-    "text": "query AppPageQuery {\n  me {\n    ...NavbarFragment_user\n    id\n  }\n}\n\nfragment NavbarFragment_user on User {\n  firstName\n  avatar\n}\n"
+    "text": "query AppPageQuery {\n  me {\n    id\n    ...NavbarFragment_user\n  }\n}\n\nfragment NavbarFragment_user on User {\n  firstName\n  avatar\n}\n"
   }
 };
-(node as any).hash = 'f4e0c977c29c9ea3ea45f0be062ded7a';
+})();
+(node as any).hash = '23ab9fff5e439f1eb89fc2e3c4711885';
 export default node;

@@ -1,4 +1,5 @@
 import React, { createContext, useCallback, useContext, useState } from 'react'
+import { useRelayEnvironment, commitLocalUpdate } from 'react-relay'
 
 type AuthContextType = {
   token?: string
@@ -10,15 +11,24 @@ let AuthContext = createContext<AuthContextType>(null!)
 
 const AuthProvider: React.FC = ({ children }) => {
   const [token, setToken] = useState<string | undefined>(localStorage.getItem('jwt') || undefined)
+  const relay = useRelayEnvironment()
 
   const signin = useCallback((_token: string) => {
-    setToken(_token)
     localStorage.setItem('jwt', _token)
+    setTimeout(() => {
+      setToken(_token)
+    }, 500)
   }, [])
-  const signout = useCallback(() => {
-    setToken(undefined)
+  const signout = () => {
     localStorage.removeItem('jwt')
-  }, [])
+    commitLocalUpdate(relay, store => {
+      store.getRoot().invalidateRecord()
+    })
+
+    setTimeout(() => {
+      setToken(undefined)
+    }, 200)
+  }
 
   const value = { token, signin, signout }
 
@@ -33,5 +43,4 @@ export default AuthProvider
 
 export const useAuth = () => {
   return useContext(AuthContext)
-
 }

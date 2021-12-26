@@ -19,11 +19,11 @@ createRoot(rootElement).render(
       <ErrorBoundary fallback={<>Something went wrong!</>}>
         <Suspense fallback='Loading...'>
           <SnackbarProvider autoHideDuration={1500}>
-            <AuthProvider>
-              <RelayProvider>
+            <RelayProvider>
+              <AuthProvider>
                 <Routing />
-              </RelayProvider>
-            </AuthProvider>
+              </AuthProvider>
+            </RelayProvider>
           </SnackbarProvider>
         </Suspense>
       </ErrorBoundary>
