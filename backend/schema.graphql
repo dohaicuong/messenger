@@ -4,6 +4,7 @@
 
 type Mutation {
   login(input: UserLoginInput!): UserLoginPayload!
+  roomAddUser(input: RoomAddUserInput!): RoomAddUserPayload
   roomCreate(input: RoomCreateInput!): RoomCreatePayload
   signup(input: UserSignupInput!): UserSignupPayload!
 }
@@ -30,9 +31,18 @@ type Room implements Node {
   participants: [User!]!
 }
 
+input RoomAddUserInput {
+  participantId: RelayId!
+  roomId: RelayId!
+}
+
+type RoomAddUserPayload {
+  participant: User
+}
+
 input RoomCreateInput {
   name: String
-  participantIds: [ID!]!
+  participantIds: [RelayId!]!
 }
 
 type RoomCreatePayload {

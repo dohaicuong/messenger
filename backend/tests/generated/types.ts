@@ -61,9 +61,13 @@ export type Room = Node & {
   participants: Array<User>;
 };
 
+export type RoomAddUserInput = {
+  roomId: Scalars['RelayId'];
+};
+
 export type RoomCreateInput = {
   name?: InputMaybe<Scalars['String']>;
-  participantIds: Array<Scalars['ID']>;
+  participantIds: Array<Scalars['RelayId']>;
 };
 
 export type RoomCreatePayload = {

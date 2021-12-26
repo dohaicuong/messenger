@@ -5,7 +5,7 @@ export const RoomCreateInput = inputObjectType({
   name: 'RoomCreateInput',
   definition: t => {
     t.string('name')
-    t.nonNull.list.nonNull.id('participantIds')
+    t.nonNull.list.nonNull.field('participantIds', { type: 'RelayId' })
   }
 })
 
@@ -28,11 +28,7 @@ export const RoomCreateMutation = extendType({
         const user = await prisma.user.findUnique({ where: { id: userId }})
         if (!user) throw new Error('Please login!')
 
-        const participantRelayIdsConnect = input.participantIds.map((relayId: string) => {
-          const { id } = fromGlobalId(relayId)
-          return { id }
-        })
-
+        const participantRelayIdsConnect = input.participantIds.map((id: string) => ({ id }))
         const newRoom = await prisma.room.create({
           data: {
             name: input.name || undefined,

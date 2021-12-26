@@ -38,9 +38,13 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  RoomAddUserInput: { // input type
+    participantId: NexusGenScalars['RelayId']; // RelayId!
+    roomId: NexusGenScalars['RelayId']; // RelayId!
+  }
   RoomCreateInput: { // input type
     name?: string | null; // String
-    participantIds: string[]; // [ID!]!
+    participantIds: NexusGenScalars['RelayId'][]; // [RelayId!]!
   }
   UserLoginInput: { // input type
     email: string; // String!
@@ -72,6 +76,9 @@ export interface NexusGenObjects {
   Query: {};
   Room: { // root type
     name?: string | null; // String
+  }
+  RoomAddUserPayload: { // root type
+    participant?: NexusGenRootTypes['User'] | null; // User
   }
   RoomCreatePayload: { // root type
     room?: NexusGenRootTypes['Room'] | null; // Room
@@ -106,6 +113,7 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 export interface NexusGenFieldTypes {
   Mutation: { // field return type
     login: NexusGenRootTypes['UserLoginPayload']; // UserLoginPayload!
+    roomAddUser: NexusGenRootTypes['RoomAddUserPayload'] | null; // RoomAddUserPayload
     roomCreate: NexusGenRootTypes['RoomCreatePayload'] | null; // RoomCreatePayload
     signup: NexusGenRootTypes['UserSignupPayload']; // UserSignupPayload!
   }
@@ -118,6 +126,9 @@ export interface NexusGenFieldTypes {
     id: string; // ID!
     name: string | null; // String
     participants: NexusGenRootTypes['User'][]; // [User!]!
+  }
+  RoomAddUserPayload: { // field return type
+    participant: NexusGenRootTypes['User'] | null; // User
   }
   RoomCreatePayload: { // field return type
     room: NexusGenRootTypes['Room'] | null; // Room
@@ -145,6 +156,7 @@ export interface NexusGenFieldTypes {
 export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
     login: 'UserLoginPayload'
+    roomAddUser: 'RoomAddUserPayload'
     roomCreate: 'RoomCreatePayload'
     signup: 'UserSignupPayload'
   }
@@ -157,6 +169,9 @@ export interface NexusGenFieldTypeNames {
     id: 'ID'
     name: 'String'
     participants: 'User'
+  }
+  RoomAddUserPayload: { // field return type name
+    participant: 'User'
   }
   RoomCreatePayload: { // field return type name
     room: 'Room'
@@ -185,6 +200,9 @@ export interface NexusGenArgTypes {
   Mutation: {
     login: { // args
       input: NexusGenInputs['UserLoginInput']; // UserLoginInput!
+    }
+    roomAddUser: { // args
+      input: NexusGenInputs['RoomAddUserInput']; // RoomAddUserInput!
     }
     roomCreate: { // args
       input: NexusGenInputs['RoomCreateInput']; // RoomCreateInput!
