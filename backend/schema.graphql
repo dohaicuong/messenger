@@ -4,6 +4,7 @@
 
 type Mutation {
   login(input: UserLoginInput!): UserLoginPayload!
+  roomCreate(input: RoomCreateInput!): RoomCreatePayload
   signup(input: UserSignupInput!): UserSignupPayload!
 }
 
@@ -19,6 +20,24 @@ type Query {
 
 """Must and only use for input"""
 scalar RelayId
+
+type Room implements Node {
+  host: User!
+
+  """Relay ID"""
+  id: ID!
+  name: String
+  participants: [User!]!
+}
+
+input RoomCreateInput {
+  name: String
+  participantIds: [ID!]!
+}
+
+type RoomCreatePayload {
+  room: Room
+}
 
 type User implements Node {
   avatar: String

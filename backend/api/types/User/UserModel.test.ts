@@ -21,6 +21,7 @@ test('User model return correct fields', async () => {
     `
       query UserNode($id: ID!) {
         node(id: $id) {
+          __typename
           ... on User {
             id
             email
@@ -38,9 +39,12 @@ test('User model return correct fields', async () => {
     }
   )
   
-  expect(res.data.node?.id).toBe(relayId)
-  expect(res.data.node?.email).toBe(data.email)
-  expect(res.data.node?.firstName).toBe(data.firstName)
-  expect(res.data.node?.lastName).toBe(data.lastName)
-  expect(res.data.node?.avatar).toBe(data.avatar)
+  expect(res.data.node?.__typename).toBe('User')
+  if (res.data.node?.__typename === 'User') {
+    expect(res.data.node?.id).toBe(relayId)
+    expect(res.data.node?.email).toBe(data.email)
+    expect(res.data.node?.firstName).toBe(data.firstName)
+    expect(res.data.node?.lastName).toBe(data.lastName)
+    expect(res.data.node?.avatar).toBe(data.avatar)
+  }
 })

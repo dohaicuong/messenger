@@ -38,6 +38,10 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  RoomCreateInput: { // input type
+    name?: string | null; // String
+    participantIds: string[]; // [ID!]!
+  }
   UserLoginInput: { // input type
     email: string; // String!
     password: string; // String!
@@ -66,6 +70,12 @@ export interface NexusGenScalars {
 export interface NexusGenObjects {
   Mutation: {};
   Query: {};
+  Room: { // root type
+    name?: string | null; // String
+  }
+  RoomCreatePayload: { // root type
+    room?: NexusGenRootTypes['Room'] | null; // Room
+  }
   User: { // root type
     avatar?: string | null; // String
     email: string; // String!
@@ -83,7 +93,7 @@ export interface NexusGenObjects {
 }
 
 export interface NexusGenInterfaces {
-  Node: NexusGenRootTypes['User'];
+  Node: NexusGenRootTypes['Room'] | NexusGenRootTypes['User'];
 }
 
 export interface NexusGenUnions {
@@ -96,11 +106,21 @@ export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 export interface NexusGenFieldTypes {
   Mutation: { // field return type
     login: NexusGenRootTypes['UserLoginPayload']; // UserLoginPayload!
+    roomCreate: NexusGenRootTypes['RoomCreatePayload'] | null; // RoomCreatePayload
     signup: NexusGenRootTypes['UserSignupPayload']; // UserSignupPayload!
   }
   Query: { // field return type
     me: NexusGenRootTypes['User'] | null; // User
     node: NexusGenRootTypes['Node'] | null; // Node
+  }
+  Room: { // field return type
+    host: NexusGenRootTypes['User']; // User!
+    id: string; // ID!
+    name: string | null; // String
+    participants: NexusGenRootTypes['User'][]; // [User!]!
+  }
+  RoomCreatePayload: { // field return type
+    room: NexusGenRootTypes['Room'] | null; // Room
   }
   User: { // field return type
     avatar: string | null; // String
@@ -125,11 +145,21 @@ export interface NexusGenFieldTypes {
 export interface NexusGenFieldTypeNames {
   Mutation: { // field return type name
     login: 'UserLoginPayload'
+    roomCreate: 'RoomCreatePayload'
     signup: 'UserSignupPayload'
   }
   Query: { // field return type name
     me: 'User'
     node: 'Node'
+  }
+  Room: { // field return type name
+    host: 'User'
+    id: 'ID'
+    name: 'String'
+    participants: 'User'
+  }
+  RoomCreatePayload: { // field return type name
+    room: 'Room'
   }
   User: { // field return type name
     avatar: 'String'
@@ -156,6 +186,9 @@ export interface NexusGenArgTypes {
     login: { // args
       input: NexusGenInputs['UserLoginInput']; // UserLoginInput!
     }
+    roomCreate: { // args
+      input: NexusGenInputs['RoomCreateInput']; // RoomCreateInput!
+    }
     signup: { // args
       input: NexusGenInputs['UserSignupInput']; // UserSignupInput!
     }
@@ -168,10 +201,11 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractTypeMembers {
-  Node: "User"
+  Node: "Room" | "User"
 }
 
 export interface NexusGenTypeInterfaces {
+  Room: "Node"
   User: "Node"
 }
 

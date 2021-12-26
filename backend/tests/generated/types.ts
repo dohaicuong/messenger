@@ -17,12 +17,18 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   login: UserLoginPayload;
+  roomCreate?: Maybe<RoomCreatePayload>;
   signup: UserSignupPayload;
 };
 
 
 export type MutationLoginArgs = {
   input: UserLoginInput;
+};
+
+
+export type MutationRoomCreateArgs = {
+  input: RoomCreateInput;
 };
 
 
@@ -44,6 +50,25 @@ export type Query = {
 
 export type QueryNodeArgs = {
   id: Scalars['ID'];
+};
+
+export type Room = Node & {
+  __typename?: 'Room';
+  host: User;
+  /** Relay ID */
+  id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
+  participants: Array<User>;
+};
+
+export type RoomCreateInput = {
+  name?: InputMaybe<Scalars['String']>;
+  participantIds: Array<Scalars['ID']>;
+};
+
+export type RoomCreatePayload = {
+  __typename?: 'RoomCreatePayload';
+  room?: Maybe<Room>;
 };
 
 export type User = Node & {
@@ -80,6 +105,34 @@ export type UserSignupPayload = {
   jwt: Scalars['String'];
   user: User;
 };
+
+export type RoomCreateWithoutJwtMutationVariables = Exact<{
+  input: RoomCreateInput;
+}>;
+
+
+export type RoomCreateWithoutJwtMutation = { __typename?: 'Mutation', roomCreate?: { __typename?: 'RoomCreatePayload', room?: { __typename?: 'Room', id: string } | null | undefined } | null | undefined };
+
+export type RoomCreateFakeJwtMutationVariables = Exact<{
+  input: RoomCreateInput;
+}>;
+
+
+export type RoomCreateFakeJwtMutation = { __typename?: 'Mutation', roomCreate?: { __typename?: 'RoomCreatePayload', room?: { __typename?: 'Room', id: string } | null | undefined } | null | undefined };
+
+export type RoomCreateMutationVariables = Exact<{
+  input: RoomCreateInput;
+}>;
+
+
+export type RoomCreateMutation = { __typename?: 'Mutation', roomCreate?: { __typename?: 'RoomCreatePayload', room?: { __typename?: 'Room', id: string, host: { __typename?: 'User', email: string }, participants: Array<{ __typename?: 'User', email: string }> } | null | undefined } | null | undefined };
+
+export type RoomNodeQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type RoomNodeQuery = { __typename?: 'Query', node?: { __typename: 'Room', id: string, name?: string | null | undefined, host: { __typename?: 'User', email: string }, participants: Array<{ __typename?: 'User', email: string }> } | { __typename: 'User' } | null | undefined };
 
 export type MeNoJwtQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -127,7 +180,7 @@ export type UserNodeQueryVariables = Exact<{
 }>;
 
 
-export type UserNodeQuery = { __typename?: 'Query', node?: { __typename?: 'User', id: string, email: string, firstName: string, lastName: string, avatar?: string | null | undefined } | null | undefined };
+export type UserNodeQuery = { __typename?: 'Query', node?: { __typename: 'Room' } | { __typename: 'User', id: string, email: string, firstName: string, lastName: string, avatar?: string | null | undefined } | null | undefined };
 
 export type UserSignupMutationVariables = Exact<{
   input: UserSignupInput;

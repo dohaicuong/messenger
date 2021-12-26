@@ -8,10 +8,20 @@ datasource db {
 }
 
 model User {
-  id        String  @id @default(cuid())
-  email     String  @unique
-  password  String
-  firstName String
-  lastName  String
-  avatar    String?
+  id                 String  @id @default(cuid())
+  email              String  @unique
+  password           String
+  firstName          String
+  lastName           String
+  avatar             String?
+  hosted_rooms       Room[]  @relation("HostUser")
+  participated_rooms Room[]
+}
+
+model Room {
+  id           String  @id @default(cuid())
+  name         String?
+  host         User    @relation("HostUser", fields: [hostId], references: [id])
+  hostId       String
+  participants User[]
 }
