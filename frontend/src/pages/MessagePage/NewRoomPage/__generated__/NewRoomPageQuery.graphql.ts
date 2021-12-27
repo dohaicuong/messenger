@@ -5,38 +5,34 @@
 import { ConcreteRequest } from "relay-runtime";
 
 import { FragmentRefs } from "relay-runtime";
-export type RoomListPageQueryVariables = {};
-export type RoomListPageQueryResponse = {
+export type NewRoomPageQueryVariables = {};
+export type NewRoomPageQueryResponse = {
     readonly me: {
-        readonly " $fragmentRefs": FragmentRefs<"RoomList_me">;
+        readonly " $fragmentRefs": FragmentRefs<"UserSearchingInput_me">;
     } | null;
 };
-export type RoomListPageQuery = {
-    readonly response: RoomListPageQueryResponse;
-    readonly variables: RoomListPageQueryVariables;
+export type NewRoomPageQuery = {
+    readonly response: NewRoomPageQueryResponse;
+    readonly variables: NewRoomPageQueryVariables;
 };
 
 
 
 /*
-query RoomListPageQuery {
+query NewRoomPageQuery {
   me {
-    ...RoomList_me
+    ...UserSearchingInput_me
     id
   }
 }
 
-fragment RoomItem_room on Room {
+fragment UserSearchingInput_me on User {
   id
-  name
-}
-
-fragment RoomList_me on User {
-  rooms(first: 10) {
+  others(first: 10, where: {}) {
     edges {
       node {
         id
-        ...RoomItem_room
+        name
         __typename
       }
       cursor
@@ -46,31 +42,35 @@ fragment RoomList_me on User {
       hasNextPage
     }
   }
-  id
 }
 */
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "kind": "Literal",
-    "name": "first",
-    "value": 10
-  }
-],
-v1 = {
+var v0 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
-};
+},
+v1 = [
+  {
+    "kind": "Literal",
+    "name": "first",
+    "value": 10
+  },
+  {
+    "kind": "Literal",
+    "name": "where",
+    "value": {}
+  }
+];
 return {
   "fragment": {
     "argumentDefinitions": [],
     "kind": "Fragment",
     "metadata": null,
-    "name": "RoomListPageQuery",
+    "name": "NewRoomPageQuery",
     "selections": [
       {
         "alias": null,
@@ -83,7 +83,7 @@ return {
           {
             "args": null,
             "kind": "FragmentSpread",
-            "name": "RoomList_me"
+            "name": "UserSearchingInput_me"
           }
         ],
         "storageKey": null
@@ -96,7 +96,7 @@ return {
   "operation": {
     "argumentDefinitions": [],
     "kind": "Operation",
-    "name": "RoomListPageQuery",
+    "name": "NewRoomPageQuery",
     "selections": [
       {
         "alias": null,
@@ -106,18 +106,19 @@ return {
         "name": "me",
         "plural": false,
         "selections": [
+          (v0/*: any*/),
           {
             "alias": null,
-            "args": (v0/*: any*/),
-            "concreteType": "RoomConnection",
+            "args": (v1/*: any*/),
+            "concreteType": "UserConnection",
             "kind": "LinkedField",
-            "name": "rooms",
+            "name": "others",
             "plural": false,
             "selections": [
               {
                 "alias": null,
                 "args": null,
-                "concreteType": "RoomEdge",
+                "concreteType": "UserEdge",
                 "kind": "LinkedField",
                 "name": "edges",
                 "plural": true,
@@ -125,12 +126,12 @@ return {
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "Room",
+                    "concreteType": "User",
                     "kind": "LinkedField",
                     "name": "node",
                     "plural": false,
                     "selections": [
-                      (v1/*: any*/),
+                      (v0/*: any*/),
                       {
                         "alias": null,
                         "args": null,
@@ -184,32 +185,33 @@ return {
                 "storageKey": null
               }
             ],
-            "storageKey": "rooms(first:10)"
+            "storageKey": "others(first:10,where:{})"
           },
           {
             "alias": null,
-            "args": (v0/*: any*/),
-            "filters": null,
+            "args": (v1/*: any*/),
+            "filters": [
+              "where"
+            ],
             "handle": "connection",
-            "key": "RoomList_me_rooms",
+            "key": "UserSearchingInput_me_others",
             "kind": "LinkedHandle",
-            "name": "rooms"
-          },
-          (v1/*: any*/)
+            "name": "others"
+          }
         ],
         "storageKey": null
       }
     ]
   },
   "params": {
-    "cacheID": "3a6420697c062dd56f79da4d31e25ca7",
+    "cacheID": "f26926fdd07a7d4b65c30cff6076693d",
     "id": null,
     "metadata": {},
-    "name": "RoomListPageQuery",
+    "name": "NewRoomPageQuery",
     "operationKind": "query",
-    "text": "query RoomListPageQuery {\n  me {\n    ...RoomList_me\n    id\n  }\n}\n\nfragment RoomItem_room on Room {\n  id\n  name\n}\n\nfragment RoomList_me on User {\n  rooms(first: 10) {\n    edges {\n      node {\n        id\n        ...RoomItem_room\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n"
+    "text": "query NewRoomPageQuery {\n  me {\n    ...UserSearchingInput_me\n    id\n  }\n}\n\nfragment UserSearchingInput_me on User {\n  id\n  others(first: 10, where: {}) {\n    edges {\n      node {\n        id\n        name\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '7f84743e568360f6e04a8f94737cb7d4';
+(node as any).hash = 'ee4f9ffa6a5be967db62ba776dce3738';
 export default node;

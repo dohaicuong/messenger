@@ -38,6 +38,9 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  OthersConnectionWhere: { // input type
+    name?: string | null; // String
+  }
   RoomAddUserInput: { // input type
     participantId: NexusGenScalars['RelayId']; // RelayId!
     roomId: NexusGenScalars['RelayId']; // RelayId!
@@ -80,9 +83,7 @@ export interface NexusGenObjects {
     startCursor?: string | null; // String
   }
   Query: {};
-  Room: { // root type
-    name?: string | null; // String
-  }
+  Room: {};
   RoomAddUserPayload: { // root type
     participant?: NexusGenRootTypes['User'] | null; // User
   }
@@ -102,6 +103,14 @@ export interface NexusGenObjects {
     email: string; // String!
     firstName: string; // String!
     lastName: string; // String!
+  }
+  UserConnection: { // root type
+    edges?: Array<NexusGenRootTypes['UserEdge'] | null> | null; // [UserEdge]
+    pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
+  }
+  UserEdge: { // root type
+    cursor: string; // String!
+    node?: NexusGenRootTypes['User'] | null; // User
   }
   UserLoginPayload: { // root type
     jwt: string; // String!
@@ -167,7 +176,17 @@ export interface NexusGenFieldTypes {
     firstName: string; // String!
     id: string; // ID!
     lastName: string; // String!
+    name: string; // String!
+    others: NexusGenRootTypes['UserConnection']; // UserConnection!
     rooms: NexusGenRootTypes['RoomConnection']; // RoomConnection!
+  }
+  UserConnection: { // field return type
+    edges: Array<NexusGenRootTypes['UserEdge'] | null> | null; // [UserEdge]
+    pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
+  }
+  UserEdge: { // field return type
+    cursor: string; // String!
+    node: NexusGenRootTypes['User'] | null; // User
   }
   UserLoginPayload: { // field return type
     jwt: string; // String!
@@ -225,7 +244,17 @@ export interface NexusGenFieldTypeNames {
     firstName: 'String'
     id: 'ID'
     lastName: 'String'
+    name: 'String'
+    others: 'UserConnection'
     rooms: 'RoomConnection'
+  }
+  UserConnection: { // field return type name
+    edges: 'UserEdge'
+    pageInfo: 'PageInfo'
+  }
+  UserEdge: { // field return type name
+    cursor: 'String'
+    node: 'User'
   }
   UserLoginPayload: { // field return type name
     jwt: 'String'
@@ -261,6 +290,11 @@ export interface NexusGenArgTypes {
     }
   }
   User: {
+    others: { // args
+      after?: string | null; // String
+      first: number; // Int!
+      where?: NexusGenInputs['OthersConnectionWhere'] | null; // OthersConnectionWhere
+    }
     rooms: { // args
       after?: string | null; // String
       first: number; // Int!

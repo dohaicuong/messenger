@@ -5,47 +5,48 @@
 import { ConcreteRequest } from "relay-runtime";
 
 import { FragmentRefs } from "relay-runtime";
-export type RoomListPaginationQueryVariables = {
+export type OthersConnectionWhere = {
+    name?: string | null | undefined;
+};
+export type UserSearchingInputPaginationQueryVariables = {
     count: number;
     cursor?: string | null | undefined;
+    where: OthersConnectionWhere;
     id: string;
 };
-export type RoomListPaginationQueryResponse = {
+export type UserSearchingInputPaginationQueryResponse = {
     readonly node: {
-        readonly " $fragmentRefs": FragmentRefs<"RoomList_me">;
+        readonly " $fragmentRefs": FragmentRefs<"UserSearchingInput_me">;
     } | null;
 };
-export type RoomListPaginationQuery = {
-    readonly response: RoomListPaginationQueryResponse;
-    readonly variables: RoomListPaginationQueryVariables;
+export type UserSearchingInputPaginationQuery = {
+    readonly response: UserSearchingInputPaginationQueryResponse;
+    readonly variables: UserSearchingInputPaginationQueryVariables;
 };
 
 
 
 /*
-query RoomListPaginationQuery(
+query UserSearchingInputPaginationQuery(
   $count: Int! = 10
   $cursor: String
+  $where: OthersConnectionWhere! = {}
   $id: ID!
 ) {
   node(id: $id) {
     __typename
-    ...RoomList_me_1G22uz
+    ...UserSearchingInput_me_mjR8k
     id
   }
 }
 
-fragment RoomItem_room on Room {
+fragment UserSearchingInput_me_mjR8k on User {
   id
-  name
-}
-
-fragment RoomList_me_1G22uz on User {
-  rooms(first: $count, after: $cursor) {
+  others(first: $count, after: $cursor, where: $where) {
     edges {
       node {
         id
-        ...RoomItem_room
+        name
         __typename
       }
       cursor
@@ -55,50 +56,57 @@ fragment RoomList_me_1G22uz on User {
       hasNextPage
     }
   }
-  id
 }
 */
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": 10,
-    "kind": "LocalArgument",
-    "name": "count"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "cursor"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "id"
-  }
-],
-v1 = [
+var v0 = {
+  "defaultValue": 10,
+  "kind": "LocalArgument",
+  "name": "count"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "cursor"
+},
+v2 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "id"
+},
+v3 = {
+  "defaultValue": {},
+  "kind": "LocalArgument",
+  "name": "where"
+},
+v4 = [
   {
     "kind": "Variable",
     "name": "id",
     "variableName": "id"
   }
 ],
-v2 = {
+v5 = {
+  "kind": "Variable",
+  "name": "where",
+  "variableName": "where"
+},
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v3 = {
+v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v4 = [
+v8 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -108,18 +116,24 @@ v4 = [
     "kind": "Variable",
     "name": "first",
     "variableName": "count"
-  }
+  },
+  (v5/*: any*/)
 ];
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/),
+      (v2/*: any*/),
+      (v3/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
-    "name": "RoomListPaginationQuery",
+    "name": "UserSearchingInputPaginationQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v4/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
@@ -136,10 +150,11 @@ return {
                 "kind": "Variable",
                 "name": "cursor",
                 "variableName": "cursor"
-              }
+              },
+              (v5/*: any*/)
             ],
             "kind": "FragmentSpread",
-            "name": "RoomList_me"
+            "name": "UserSearchingInput_me"
           }
         ],
         "storageKey": null
@@ -150,35 +165,40 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/),
+      (v3/*: any*/),
+      (v2/*: any*/)
+    ],
     "kind": "Operation",
-    "name": "RoomListPaginationQuery",
+    "name": "UserSearchingInputPaginationQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v4/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
-          (v3/*: any*/),
+          (v6/*: any*/),
+          (v7/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
               {
                 "alias": null,
-                "args": (v4/*: any*/),
-                "concreteType": "RoomConnection",
+                "args": (v8/*: any*/),
+                "concreteType": "UserConnection",
                 "kind": "LinkedField",
-                "name": "rooms",
+                "name": "others",
                 "plural": false,
                 "selections": [
                   {
                     "alias": null,
                     "args": null,
-                    "concreteType": "RoomEdge",
+                    "concreteType": "UserEdge",
                     "kind": "LinkedField",
                     "name": "edges",
                     "plural": true,
@@ -186,12 +206,12 @@ return {
                       {
                         "alias": null,
                         "args": null,
-                        "concreteType": "Room",
+                        "concreteType": "User",
                         "kind": "LinkedField",
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v3/*: any*/),
+                          (v7/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -199,7 +219,7 @@ return {
                             "name": "name",
                             "storageKey": null
                           },
-                          (v2/*: any*/)
+                          (v6/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -243,12 +263,14 @@ return {
               },
               {
                 "alias": null,
-                "args": (v4/*: any*/),
-                "filters": null,
+                "args": (v8/*: any*/),
+                "filters": [
+                  "where"
+                ],
                 "handle": "connection",
-                "key": "RoomList_me_rooms",
+                "key": "UserSearchingInput_me_others",
                 "kind": "LinkedHandle",
-                "name": "rooms"
+                "name": "others"
               }
             ],
             "type": "User",
@@ -260,14 +282,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "aecf29cdc84c1173bab4c8223be97cab",
+    "cacheID": "0a09d470de6348a99b435fa9e3f06ed2",
     "id": null,
     "metadata": {},
-    "name": "RoomListPaginationQuery",
+    "name": "UserSearchingInputPaginationQuery",
     "operationKind": "query",
-    "text": "query RoomListPaginationQuery(\n  $count: Int! = 10\n  $cursor: String\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...RoomList_me_1G22uz\n    id\n  }\n}\n\nfragment RoomItem_room on Room {\n  id\n  name\n}\n\nfragment RoomList_me_1G22uz on User {\n  rooms(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        ...RoomItem_room\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n"
+    "text": "query UserSearchingInputPaginationQuery(\n  $count: Int! = 10\n  $cursor: String\n  $where: OthersConnectionWhere! = {}\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...UserSearchingInput_me_mjR8k\n    id\n  }\n}\n\nfragment UserSearchingInput_me_mjR8k on User {\n  id\n  others(first: $count, after: $cursor, where: $where) {\n    edges {\n      node {\n        id\n        name\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'c3510d837aa817bdf70b3f1ddc249952';
+(node as any).hash = 'a5c2646b75f289076a0b7aae8d2733f0';
 export default node;

@@ -14,6 +14,10 @@ interface Node {
   id: ID!
 }
 
+input OthersConnectionWhere {
+  name: String
+}
+
 """
 PageInfo cursor, as defined in https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
 """
@@ -102,6 +106,15 @@ type User implements Node {
   """Relay ID"""
   id: ID!
   lastName: String!
+  name: String!
+  others(
+    """Returns the elements in the list that come after the specified cursor"""
+    after: String
+
+    """Returns the first n elements from the list."""
+    first: Int!
+    where: OthersConnectionWhere
+  ): UserConnection!
   rooms(
     """Returns the elements in the list that come after the specified cursor"""
     after: String
@@ -109,6 +122,26 @@ type User implements Node {
     """Returns the first n elements from the list."""
     first: Int!
   ): RoomConnection!
+}
+
+type UserConnection {
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
+  """
+  edges: [UserEdge]
+
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
+  """
+  pageInfo: PageInfo!
+}
+
+type UserEdge {
+  """https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor"""
+  cursor: String!
+
+  """https://facebook.github.io/relay/graphql/connections.htm#sec-Node"""
+  node: User
 }
 
 input UserLoginInput {

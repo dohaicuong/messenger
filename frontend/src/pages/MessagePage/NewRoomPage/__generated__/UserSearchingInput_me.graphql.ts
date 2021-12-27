@@ -3,31 +3,31 @@
 // @ts-nocheck
 
 import { ReaderFragment } from "relay-runtime";
-import RoomListPaginationQuery from "./RoomListPaginationQuery.graphql";
+import UserSearchingInputPaginationQuery from "./UserSearchingInputPaginationQuery.graphql";
 import { FragmentRefs } from "relay-runtime";
-export type RoomList_me = {
-    readonly rooms: {
+export type UserSearchingInput_me = {
+    readonly id: string;
+    readonly others: {
         readonly edges: ReadonlyArray<{
             readonly node: {
                 readonly id: string;
-                readonly " $fragmentRefs": FragmentRefs<"RoomItem_room">;
+                readonly name: string;
             } | null;
         } | null> | null;
     };
-    readonly id: string;
-    readonly " $refType": "RoomList_me";
+    readonly " $refType": "UserSearchingInput_me";
 };
-export type RoomList_me$data = RoomList_me;
-export type RoomList_me$key = {
-    readonly " $data"?: RoomList_me$data | undefined;
-    readonly " $fragmentRefs": FragmentRefs<"RoomList_me">;
+export type UserSearchingInput_me$data = UserSearchingInput_me;
+export type UserSearchingInput_me$key = {
+    readonly " $data"?: UserSearchingInput_me$data | undefined;
+    readonly " $fragmentRefs": FragmentRefs<"UserSearchingInput_me">;
 };
 
 
 
 const node: ReaderFragment = (function(){
 var v0 = [
-  "rooms"
+  "others"
 ],
 v1 = {
   "alias": null,
@@ -47,6 +47,11 @@ return {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "cursor"
+    },
+    {
+      "defaultValue": {},
+      "kind": "LocalArgument",
+      "name": "where"
     }
   ],
   "kind": "Fragment",
@@ -71,24 +76,31 @@ return {
       "fragmentPathInResult": [
         "node"
       ],
-      "operation": RoomListPaginationQuery,
+      "operation": UserSearchingInputPaginationQuery,
       "identifierField": "id"
     }
   },
-  "name": "RoomList_me",
+  "name": "UserSearchingInput_me",
   "selections": [
+    (v1/*: any*/),
     {
-      "alias": "rooms",
-      "args": null,
-      "concreteType": "RoomConnection",
+      "alias": "others",
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "where",
+          "variableName": "where"
+        }
+      ],
+      "concreteType": "UserConnection",
       "kind": "LinkedField",
-      "name": "__RoomList_me_rooms_connection",
+      "name": "__UserSearchingInput_me_others_connection",
       "plural": false,
       "selections": [
         {
           "alias": null,
           "args": null,
-          "concreteType": "RoomEdge",
+          "concreteType": "UserEdge",
           "kind": "LinkedField",
           "name": "edges",
           "plural": true,
@@ -96,7 +108,7 @@ return {
             {
               "alias": null,
               "args": null,
-              "concreteType": "Room",
+              "concreteType": "User",
               "kind": "LinkedField",
               "name": "node",
               "plural": false,
@@ -106,13 +118,15 @@ return {
                   "alias": null,
                   "args": null,
                   "kind": "ScalarField",
-                  "name": "__typename",
+                  "name": "name",
                   "storageKey": null
                 },
                 {
+                  "alias": null,
                   "args": null,
-                  "kind": "FragmentSpread",
-                  "name": "RoomItem_room"
+                  "kind": "ScalarField",
+                  "name": "__typename",
+                  "storageKey": null
                 }
               ],
               "storageKey": null
@@ -154,12 +168,11 @@ return {
         }
       ],
       "storageKey": null
-    },
-    (v1/*: any*/)
+    }
   ],
   "type": "User",
   "abstractKey": null
 };
 })();
-(node as any).hash = 'c3510d837aa817bdf70b3f1ddc249952';
+(node as any).hash = 'a5c2646b75f289076a0b7aae8d2733f0';
 export default node;

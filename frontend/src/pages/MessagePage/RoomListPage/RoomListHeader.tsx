@@ -14,10 +14,10 @@ const RoomListHeader = () => {
 
       <div style={{ flexGrow: 1 }} />
 
-      <IconButton>
+      <IconButton disabled>
         <MoreVert />
       </IconButton>
-      <IconButton>
+      <IconButton disabled>
         <VideoCall />
       </IconButton>
       <IconButton onClick={handleNewRoom}>

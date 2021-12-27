@@ -12,6 +12,7 @@
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.2.5",
+    "@mui/lab": "^5.0.0-alpha.61",
     "@mui/material": "^5.2.5",
     "notistack": "^2.0.3",
     "react": "^18.0.0-beta-24dd07bd2-20211208",
