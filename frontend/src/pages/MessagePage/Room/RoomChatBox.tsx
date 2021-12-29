@@ -1,5 +1,5 @@
-import { AddCircle, EmojiEmotions, Gif, PermMedia, PhotoLibrary, ThumbUp } from '@mui/icons-material'
-import { IconButton, InputAdornment, Toolbar } from '@mui/material'
+import { AddCircle, Gif, PermMedia, PhotoLibrary, ThumbUp } from '@mui/icons-material'
+import { IconButton, Toolbar } from '@mui/material'
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import TextField from '../../../common/TextField'
 import { useMutation, graphql } from 'react-relay'
@@ -7,6 +7,9 @@ import { MessageSendInput, RoomChatBoxSendMessageMutation } from './__generated_
 import { useParams } from 'react-router-dom'
 import { useSnackbar } from 'notistack'
 import { useRef } from 'react'
+
+import EmojiButton from './EmojiButton'
+import { EmojiData } from 'emoji-mart'
 
 const RoomChatBox = () => {
   const { id } = useParams()
@@ -30,6 +33,11 @@ const RoomChatBox = () => {
   const methods = useForm<Omit<MessageSendInput, 'roomId'>>()
   const contentInputRef = useRef<HTMLDivElement | null>(null)
   const { ref, ...rest } = methods.register('content')
+
+  const contentValue = methods.watch('content')
+  const onSelectEmoji = (emoji: EmojiData) => {
+    methods.setValue('content', `${contentValue || ''}${(emoji as any).native}`)
+  }
 
   const onSubmit: SubmitHandler<Omit<MessageSendInput, 'roomId'>> = data => {
     sendMessageCommit({
@@ -75,13 +83,7 @@ const RoomChatBox = () => {
           <TextField
             placeholder='Aa'
             InputProps={{
-              endAdornment: (
-                <InputAdornment position='end'>
-                  <IconButton disabled>
-                    <EmojiEmotions />
-                  </IconButton>
-                </InputAdornment>
-              )
+              endAdornment: <EmojiButton onSelect={onSelectEmoji} />
             }}
             autoComplete='off'
             fullWidth
