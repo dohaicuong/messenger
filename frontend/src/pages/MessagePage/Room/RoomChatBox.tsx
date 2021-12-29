@@ -39,7 +39,7 @@ const RoomChatBox = () => {
           roomId: id
         },
         connections: [
-          `client:${id}:__RoomMessageBox_room_messages_connection`
+          `client:${id}:__RoomMessageList_room_messages_connection`
         ]
       },
       onCompleted: (res, errors) => {

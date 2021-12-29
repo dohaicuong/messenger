@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom"
 import RoomHeader from './RoomHeader'
 import RoomChatBox from './RoomChatBox'
 import { RoomQuery } from './__generated__/RoomQuery.graphql'
-import RoomMessageBox from './RoomMessageBox'
+import RoomMessageList from './RoomMessageList'
 
 const Room = () => {
   const { id } = useParams<{ id: string }>()
@@ -14,7 +14,7 @@ const Room = () => {
         room: node (id: $id) {
           ... on Room {
             ...RoomHeader_room
-            ...RoomMessageBox_room
+            ...RoomMessageList_room
           }
         }
       }
@@ -28,7 +28,7 @@ const Room = () => {
     <>
       <RoomHeader roomRef={data.room} />
       <Divider />
-      <RoomMessageBox roomRef={data.room} />
+      <RoomMessageList roomRef={data.room} />
       <RoomChatBox />
     </>
   )

@@ -3,9 +3,10 @@
 // @ts-nocheck
 
 import { ReaderFragment } from "relay-runtime";
-import RoomMessageBoxPaginationQuery from "./RoomMessageBoxPaginationQuery.graphql";
+import RoomMessageListPaginationQuery from "./RoomMessageListPaginationQuery.graphql";
 import { FragmentRefs } from "relay-runtime";
-export type RoomMessageBox_room = {
+export type RoomMessageList_room = {
+    readonly id: string;
     readonly messages: {
         readonly edges: ReadonlyArray<{
             readonly node: {
@@ -14,13 +15,12 @@ export type RoomMessageBox_room = {
             } | null;
         } | null> | null;
     };
-    readonly id: string;
-    readonly " $refType": "RoomMessageBox_room";
+    readonly " $refType": "RoomMessageList_room";
 };
-export type RoomMessageBox_room$data = RoomMessageBox_room;
-export type RoomMessageBox_room$key = {
-    readonly " $data"?: RoomMessageBox_room$data | undefined;
-    readonly " $fragmentRefs": FragmentRefs<"RoomMessageBox_room">;
+export type RoomMessageList_room$data = RoomMessageList_room;
+export type RoomMessageList_room$key = {
+    readonly " $data"?: RoomMessageList_room$data | undefined;
+    readonly " $fragmentRefs": FragmentRefs<"RoomMessageList_room">;
 };
 
 
@@ -71,18 +71,19 @@ return {
       "fragmentPathInResult": [
         "node"
       ],
-      "operation": RoomMessageBoxPaginationQuery,
+      "operation": RoomMessageListPaginationQuery,
       "identifierField": "id"
     }
   },
-  "name": "RoomMessageBox_room",
+  "name": "RoomMessageList_room",
   "selections": [
+    (v1/*: any*/),
     {
       "alias": "messages",
       "args": null,
       "concreteType": "MessageConnection",
       "kind": "LinkedField",
-      "name": "__RoomMessageBox_room_messages_connection",
+      "name": "__RoomMessageList_room_messages_connection",
       "plural": false,
       "selections": [
         {
@@ -154,12 +155,11 @@ return {
         }
       ],
       "storageKey": null
-    },
-    (v1/*: any*/)
+    }
   ],
   "type": "Room",
   "abstractKey": null
 };
 })();
-(node as any).hash = '67345b1e2b0ec61d3464e77cafa8f796';
+(node as any).hash = 'd7849d9325a79a8d3e493d5146a06b14';
 export default node;

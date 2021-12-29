@@ -10,7 +10,7 @@ export type RoomQueryVariables = {
 };
 export type RoomQueryResponse = {
     readonly room: {
-        readonly " $fragmentRefs": FragmentRefs<"RoomHeader_room" | "RoomMessageBox_room">;
+        readonly " $fragmentRefs": FragmentRefs<"RoomHeader_room" | "RoomMessageList_room">;
     } | null;
 };
 export type RoomQuery = {
@@ -28,7 +28,7 @@ query RoomQuery(
     __typename
     ... on Room {
       ...RoomHeader_room
-      ...RoomMessageBox_room
+      ...RoomMessageList_room
     }
     id
   }
@@ -38,7 +38,17 @@ fragment RoomHeader_room on Room {
   name
 }
 
-fragment RoomMessageBox_room on Room {
+fragment RoomMessageItem_message on Message {
+  id
+  content
+  author {
+    id
+    avatar
+  }
+}
+
+fragment RoomMessageList_room on Room {
+  id
   messages(first: 10) {
     edges {
       node {
@@ -52,16 +62,6 @@ fragment RoomMessageBox_room on Room {
       endCursor
       hasNextPage
     }
-  }
-  id
-}
-
-fragment RoomMessageItem_message on Message {
-  id
-  content
-  author {
-    id
-    avatar
   }
 }
 */
@@ -128,7 +128,7 @@ return {
               {
                 "args": null,
                 "kind": "FragmentSpread",
-                "name": "RoomMessageBox_room"
+                "name": "RoomMessageList_room"
               }
             ],
             "type": "Room",
@@ -265,7 +265,7 @@ return {
                 "args": (v4/*: any*/),
                 "filters": null,
                 "handle": "connection",
-                "key": "RoomMessageBox_room_messages",
+                "key": "RoomMessageList_room_messages",
                 "kind": "LinkedHandle",
                 "name": "messages"
               }
@@ -279,14 +279,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "0789af305b55db3bc708abb0bed1928f",
+    "cacheID": "3b91bbdf6d08f11c9751dc6eb79b3291",
     "id": null,
     "metadata": {},
     "name": "RoomQuery",
     "operationKind": "query",
-    "text": "query RoomQuery(\n  $id: ID!\n) {\n  room: node(id: $id) {\n    __typename\n    ... on Room {\n      ...RoomHeader_room\n      ...RoomMessageBox_room\n    }\n    id\n  }\n}\n\nfragment RoomHeader_room on Room {\n  name\n}\n\nfragment RoomMessageBox_room on Room {\n  messages(first: 10) {\n    edges {\n      node {\n        id\n        ...RoomMessageItem_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment RoomMessageItem_message on Message {\n  id\n  content\n  author {\n    id\n    avatar\n  }\n}\n"
+    "text": "query RoomQuery(\n  $id: ID!\n) {\n  room: node(id: $id) {\n    __typename\n    ... on Room {\n      ...RoomHeader_room\n      ...RoomMessageList_room\n    }\n    id\n  }\n}\n\nfragment RoomHeader_room on Room {\n  name\n}\n\nfragment RoomMessageItem_message on Message {\n  id\n  content\n  author {\n    id\n    avatar\n  }\n}\n\nfragment RoomMessageList_room on Room {\n  id\n  messages(first: 10) {\n    edges {\n      node {\n        id\n        ...RoomMessageItem_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'e91f3ffab2511305047b37e3b52ad4b1';
+(node as any).hash = '065bed770459e814df221b28f47f171b';
 export default node;

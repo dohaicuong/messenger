@@ -1,26 +1,50 @@
 import { styled, Typography } from '@mui/material'
-import { usePaginationFragment, graphql } from 'react-relay'
-import { RoomMessageBoxPaginationQuery } from './__generated__/RoomMessageBoxPaginationQuery.graphql'
-import { RoomMessageBox_room$key } from './__generated__/RoomMessageBox_room.graphql'
+import { usePaginationFragment, graphql, useSubscription } from 'react-relay'
 import RoomMessageItem from './RoomMessageItem'
 import { LoadingButton } from '@mui/lab'
+import { RoomMessageList_room$key } from './__generated__/RoomMessageList_room.graphql'
+import { RoomMessageListPaginationQuery } from './__generated__/RoomMessageListPaginationQuery.graphql'
+import { useMemo } from 'react'
+import { RoomMessageListSubscription } from './__generated__/RoomMessageListSubscription.graphql'
+import { useParams } from 'react-router-dom'
 
-type RoomMessageBoxProps = {
-  roomRef: RoomMessageBox_room$key
+type RoomMessageListProps = {
+  roomRef: RoomMessageList_room$key
 }
 
-const RoomMessageBox: React.FC<RoomMessageBoxProps> = ({ roomRef }) => {
-  const { data, hasNext, isLoadingNext, loadNext } = usePaginationFragment<RoomMessageBoxPaginationQuery, RoomMessageBox_room$key>(
+const MessageSentSubscription = graphql`
+  subscription RoomMessageListSubscription(
+    $input: MessageSentInput!
+    $connections: [ID!]!
+  )
+  {
+    messageSent(input: $input) {
+      message
+      @appendNode(
+        edgeTypeName: "MessageEdge"
+        connections: $connections
+      )
+      {
+        ...RoomMessageItem_message
+      }
+    }
+  }
+`
+const RoomMessageList: React.FC<RoomMessageListProps> = ({ roomRef }) => {
+  const { id } = useParams()
+
+  const { data, hasNext, isLoadingNext, loadNext } = usePaginationFragment<RoomMessageListPaginationQuery, RoomMessageList_room$key>(
     graphql`
-      fragment RoomMessageBox_room on Room
-      @refetchable(queryName: "RoomMessageBoxPaginationQuery")
+      fragment RoomMessageList_room on Room
+      @refetchable(queryName: "RoomMessageListPaginationQuery")
       @argumentDefinitions(
         count: { type: "Int!", defaultValue: 10 }
         cursor: { type: "String" }
       )
       {
+        id
         messages(first: $count, after: $cursor)
-        @connection(key: "RoomMessageBox_room_messages")
+        @connection(key: "RoomMessageList_room_messages")
         {
           edges {
             node {
@@ -34,6 +58,22 @@ const RoomMessageBox: React.FC<RoomMessageBoxProps> = ({ roomRef }) => {
     roomRef
   )
   const handleLoadMore = () => loadNext(10)
+  
+  const config = useMemo(
+    () => ({
+      subscription: MessageSentSubscription,
+      variables: { 
+        input: {
+          roomId: id
+        },
+        connections: [
+          `client:${id}:__RoomMessageList_room_messages_connection`
+        ]  
+      },
+    }),
+    [id]
+  )
+  useSubscription<RoomMessageListSubscription>(config)
 
   return (
     <RoomMessageBoxContainer>
@@ -58,7 +98,7 @@ const RoomMessageBox: React.FC<RoomMessageBoxProps> = ({ roomRef }) => {
   )
 }
 
-export default RoomMessageBox
+export default RoomMessageList
 
 const RoomMessageBoxContainer = styled('div')(({ theme }) => `
   height: calc(100vh - 64px - 65px - 56px - 33px);

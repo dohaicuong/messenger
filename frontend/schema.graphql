@@ -39,6 +39,14 @@ type MessageSendPayload {
   message: Message
 }
 
+input MessageSentInput {
+  roomId: RelayId!
+}
+
+type MessageSentPayload {
+  message: Message
+}
+
 type Mutation {
   login(input: UserLoginInput!): UserLoginPayload!
   messageSend(input: MessageSendInput!): MessageSendPayload
@@ -141,6 +149,10 @@ type RoomEdge {
 
   """https://facebook.github.io/relay/graphql/connections.htm#sec-Node"""
   node: Room
+}
+
+type Subscription {
+  messageSent(input: MessageSentInput!): MessageSentPayload
 }
 
 type User implements Node {

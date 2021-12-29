@@ -5,37 +5,47 @@
 import { ConcreteRequest } from "relay-runtime";
 
 import { FragmentRefs } from "relay-runtime";
-export type RoomMessageBoxPaginationQueryVariables = {
+export type RoomMessageListPaginationQueryVariables = {
     count: number;
     cursor?: string | null | undefined;
     id: string;
 };
-export type RoomMessageBoxPaginationQueryResponse = {
+export type RoomMessageListPaginationQueryResponse = {
     readonly node: {
-        readonly " $fragmentRefs": FragmentRefs<"RoomMessageBox_room">;
+        readonly " $fragmentRefs": FragmentRefs<"RoomMessageList_room">;
     } | null;
 };
-export type RoomMessageBoxPaginationQuery = {
-    readonly response: RoomMessageBoxPaginationQueryResponse;
-    readonly variables: RoomMessageBoxPaginationQueryVariables;
+export type RoomMessageListPaginationQuery = {
+    readonly response: RoomMessageListPaginationQueryResponse;
+    readonly variables: RoomMessageListPaginationQueryVariables;
 };
 
 
 
 /*
-query RoomMessageBoxPaginationQuery(
+query RoomMessageListPaginationQuery(
   $count: Int! = 10
   $cursor: String
   $id: ID!
 ) {
   node(id: $id) {
     __typename
-    ...RoomMessageBox_room_1G22uz
+    ...RoomMessageList_room_1G22uz
     id
   }
 }
 
-fragment RoomMessageBox_room_1G22uz on Room {
+fragment RoomMessageItem_message on Message {
+  id
+  content
+  author {
+    id
+    avatar
+  }
+}
+
+fragment RoomMessageList_room_1G22uz on Room {
+  id
   messages(first: $count, after: $cursor) {
     edges {
       node {
@@ -49,16 +59,6 @@ fragment RoomMessageBox_room_1G22uz on Room {
       endCursor
       hasNextPage
     }
-  }
-  id
-}
-
-fragment RoomMessageItem_message on Message {
-  id
-  content
-  author {
-    id
-    avatar
   }
 }
 */
@@ -119,7 +119,7 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Fragment",
     "metadata": null,
-    "name": "RoomMessageBoxPaginationQuery",
+    "name": "RoomMessageListPaginationQuery",
     "selections": [
       {
         "alias": null,
@@ -143,7 +143,7 @@ return {
               }
             ],
             "kind": "FragmentSpread",
-            "name": "RoomMessageBox_room"
+            "name": "RoomMessageList_room"
           }
         ],
         "storageKey": null
@@ -156,7 +156,7 @@ return {
   "operation": {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
-    "name": "RoomMessageBoxPaginationQuery",
+    "name": "RoomMessageListPaginationQuery",
     "selections": [
       {
         "alias": null,
@@ -269,7 +269,7 @@ return {
                 "args": (v4/*: any*/),
                 "filters": null,
                 "handle": "connection",
-                "key": "RoomMessageBox_room_messages",
+                "key": "RoomMessageList_room_messages",
                 "kind": "LinkedHandle",
                 "name": "messages"
               }
@@ -283,14 +283,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "dc9c18dcddf94d66023dac28a64c8933",
+    "cacheID": "f6cf684382b793d2f6d5822f4f64f276",
     "id": null,
     "metadata": {},
-    "name": "RoomMessageBoxPaginationQuery",
+    "name": "RoomMessageListPaginationQuery",
     "operationKind": "query",
-    "text": "query RoomMessageBoxPaginationQuery(\n  $count: Int! = 10\n  $cursor: String\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...RoomMessageBox_room_1G22uz\n    id\n  }\n}\n\nfragment RoomMessageBox_room_1G22uz on Room {\n  messages(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        ...RoomMessageItem_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n\nfragment RoomMessageItem_message on Message {\n  id\n  content\n  author {\n    id\n    avatar\n  }\n}\n"
+    "text": "query RoomMessageListPaginationQuery(\n  $count: Int! = 10\n  $cursor: String\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...RoomMessageList_room_1G22uz\n    id\n  }\n}\n\nfragment RoomMessageItem_message on Message {\n  id\n  content\n  author {\n    id\n    avatar\n  }\n}\n\nfragment RoomMessageList_room_1G22uz on Room {\n  id\n  messages(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        ...RoomMessageItem_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = '67345b1e2b0ec61d3464e77cafa8f796';
+(node as any).hash = 'd7849d9325a79a8d3e493d5146a06b14';
 export default node;

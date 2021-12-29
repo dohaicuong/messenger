@@ -23,6 +23,7 @@
     "react-relay-network-modern": "^6.2.1",
     "react-router-dom": "6",
     "relay-runtime": "^12.0.0",
+    "subscriptions-transport-ws": "^0.11.0",
     "vite-plugin-relay": "^1.0.7"
   },
   "devDependencies": {
