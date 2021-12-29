@@ -46,7 +46,7 @@ fragment RoomMessageItem_message on Message {
 
 fragment RoomMessageList_room_1G22uz on Room {
   id
-  messages(first: $count, after: $cursor) {
+  messages(last: $count, before: $cursor) {
     edges {
       node {
         id
@@ -56,8 +56,8 @@ fragment RoomMessageList_room_1G22uz on Room {
       cursor
     }
     pageInfo {
-      endCursor
-      hasNextPage
+      hasPreviousPage
+      startCursor
     }
   }
 }
@@ -105,12 +105,12 @@ v3 = {
 v4 = [
   {
     "kind": "Variable",
-    "name": "after",
+    "name": "before",
     "variableName": "cursor"
   },
   {
     "kind": "Variable",
-    "name": "first",
+    "name": "last",
     "variableName": "count"
   }
 ];
@@ -248,14 +248,14 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "endCursor",
+                        "name": "hasPreviousPage",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "hasNextPage",
+                        "name": "startCursor",
                         "storageKey": null
                       }
                     ],
@@ -283,14 +283,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "f6cf684382b793d2f6d5822f4f64f276",
+    "cacheID": "a1339c2f28b2587ef064e253115039f7",
     "id": null,
     "metadata": {},
     "name": "RoomMessageListPaginationQuery",
     "operationKind": "query",
-    "text": "query RoomMessageListPaginationQuery(\n  $count: Int! = 10\n  $cursor: String\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...RoomMessageList_room_1G22uz\n    id\n  }\n}\n\nfragment RoomMessageItem_message on Message {\n  id\n  content\n  author {\n    id\n    avatar\n  }\n}\n\nfragment RoomMessageList_room_1G22uz on Room {\n  id\n  messages(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        ...RoomMessageItem_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query RoomMessageListPaginationQuery(\n  $count: Int! = 10\n  $cursor: String\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...RoomMessageList_room_1G22uz\n    id\n  }\n}\n\nfragment RoomMessageItem_message on Message {\n  id\n  content\n  author {\n    id\n    avatar\n  }\n}\n\nfragment RoomMessageList_room_1G22uz on Room {\n  id\n  messages(last: $count, before: $cursor) {\n    edges {\n      node {\n        id\n        ...RoomMessageItem_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'd7849d9325a79a8d3e493d5146a06b14';
+(node as any).hash = 'f17fd53f8c46d3c0cea21ed603a05b62';
 export default node;

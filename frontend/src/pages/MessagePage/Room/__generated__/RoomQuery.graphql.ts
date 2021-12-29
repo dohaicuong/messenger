@@ -49,7 +49,7 @@ fragment RoomMessageItem_message on Message {
 
 fragment RoomMessageList_room on Room {
   id
-  messages(first: 10) {
+  messages(last: 10) {
     edges {
       node {
         id
@@ -59,8 +59,8 @@ fragment RoomMessageList_room on Room {
       cursor
     }
     pageInfo {
-      endCursor
-      hasNextPage
+      hasPreviousPage
+      startCursor
     }
   }
 }
@@ -98,7 +98,7 @@ v3 = {
 v4 = [
   {
     "kind": "Literal",
-    "name": "first",
+    "name": "last",
     "value": 10
   }
 ];
@@ -244,21 +244,21 @@ return {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "endCursor",
+                        "name": "hasPreviousPage",
                         "storageKey": null
                       },
                       {
                         "alias": null,
                         "args": null,
                         "kind": "ScalarField",
-                        "name": "hasNextPage",
+                        "name": "startCursor",
                         "storageKey": null
                       }
                     ],
                     "storageKey": null
                   }
                 ],
-                "storageKey": "messages(first:10)"
+                "storageKey": "messages(last:10)"
               },
               {
                 "alias": null,
@@ -279,12 +279,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "3b91bbdf6d08f11c9751dc6eb79b3291",
+    "cacheID": "ad99b9ce293c4c7fa6f600aaf191c9e0",
     "id": null,
     "metadata": {},
     "name": "RoomQuery",
     "operationKind": "query",
-    "text": "query RoomQuery(\n  $id: ID!\n) {\n  room: node(id: $id) {\n    __typename\n    ... on Room {\n      ...RoomHeader_room\n      ...RoomMessageList_room\n    }\n    id\n  }\n}\n\nfragment RoomHeader_room on Room {\n  name\n}\n\nfragment RoomMessageItem_message on Message {\n  id\n  content\n  author {\n    id\n    avatar\n  }\n}\n\nfragment RoomMessageList_room on Room {\n  id\n  messages(first: 10) {\n    edges {\n      node {\n        id\n        ...RoomMessageItem_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n}\n"
+    "text": "query RoomQuery(\n  $id: ID!\n) {\n  room: node(id: $id) {\n    __typename\n    ... on Room {\n      ...RoomHeader_room\n      ...RoomMessageList_room\n    }\n    id\n  }\n}\n\nfragment RoomHeader_room on Room {\n  name\n}\n\nfragment RoomMessageItem_message on Message {\n  id\n  content\n  author {\n    id\n    avatar\n  }\n}\n\nfragment RoomMessageList_room on Room {\n  id\n  messages(last: 10) {\n    edges {\n      node {\n        id\n        ...RoomMessageItem_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n"
   }
 };
 })();

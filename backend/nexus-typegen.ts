@@ -368,7 +368,9 @@ export interface NexusGenArgTypes {
   Room: {
     messages: { // args
       after?: string | null; // String
-      first: number; // Int!
+      before?: string | null; // String
+      first?: number | null; // Int
+      last?: number | null; // Int
     }
   }
   Subscription: {

@@ -4,7 +4,7 @@ import RoomMessageItem from './RoomMessageItem'
 import { LoadingButton } from '@mui/lab'
 import { RoomMessageList_room$key } from './__generated__/RoomMessageList_room.graphql'
 import { RoomMessageListPaginationQuery } from './__generated__/RoomMessageListPaginationQuery.graphql'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { RoomMessageListSubscription } from './__generated__/RoomMessageListSubscription.graphql'
 import { useParams } from 'react-router-dom'
 
@@ -33,7 +33,7 @@ const MessageSentSubscription = graphql`
 const RoomMessageList: React.FC<RoomMessageListProps> = ({ roomRef }) => {
   const { id } = useParams()
 
-  const { data, hasNext, isLoadingNext, loadNext } = usePaginationFragment<RoomMessageListPaginationQuery, RoomMessageList_room$key>(
+  const { data, hasPrevious, isLoadingPrevious, loadPrevious } = usePaginationFragment<RoomMessageListPaginationQuery, RoomMessageList_room$key>(
     graphql`
       fragment RoomMessageList_room on Room
       @refetchable(queryName: "RoomMessageListPaginationQuery")
@@ -43,7 +43,7 @@ const RoomMessageList: React.FC<RoomMessageListProps> = ({ roomRef }) => {
       )
       {
         id
-        messages(first: $count, after: $cursor)
+        messages(last: $count, before: $cursor)
         @connection(key: "RoomMessageList_room_messages")
         {
           edges {
@@ -57,7 +57,12 @@ const RoomMessageList: React.FC<RoomMessageListProps> = ({ roomRef }) => {
     `,
     roomRef
   )
-  const handleLoadMore = () => loadNext(10)
+
+  const [isLoadMore, setIsLoadMore] = useState(false)
+  const handleLoadMore = () => {
+    setIsLoadMore(true)
+    loadPrevious(10)
+  }
   
   const config = useMemo(
     () => ({
@@ -75,6 +80,15 @@ const RoomMessageList: React.FC<RoomMessageListProps> = ({ roomRef }) => {
   )
   useSubscription<RoomMessageListSubscription>(config)
 
+  const bottomRef = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    if (isLoadMore) return setIsLoadMore(false)
+
+    bottomRef.current?.scrollIntoView({
+      behavior: 'smooth'
+    })
+  }, [data.messages.edges?.length])
+
   return (
     <RoomMessageBoxContainer>
       {!Boolean(data.messages.edges?.length) && (
@@ -83,17 +97,19 @@ const RoomMessageList: React.FC<RoomMessageListProps> = ({ roomRef }) => {
         </Typography>
       )}
 
+      {hasPrevious && (
+        <LoadingButton fullWidth loading={isLoadingPrevious} onClick={handleLoadMore}>
+          Load more
+        </LoadingButton>
+      )}
+
       {data.messages.edges?.map(edge => {
         if(!edge?.node) return
 
         return <RoomMessageItem key={edge.node.id} messageRef={edge.node} />
       })}
 
-      {hasNext && (
-        <LoadingButton fullWidth loading={isLoadingNext} onClick={handleLoadMore}>
-          Load more
-        </LoadingButton>
-      )}
+      <div ref={bottomRef} />
     </RoomMessageBoxContainer>
   )
 }

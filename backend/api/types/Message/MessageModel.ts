@@ -24,6 +24,7 @@ export const RoomExtendMessages = extendType({
     // @ts-ignore
     t.nonNull.connectionField('messages', {
       type: 'Message',
+      disableBackwardPagination: false,
       // @ts-ignore
       resolve: async (room: Room, args, { prisma }) => {
         const messages = await prisma.message.findMany({

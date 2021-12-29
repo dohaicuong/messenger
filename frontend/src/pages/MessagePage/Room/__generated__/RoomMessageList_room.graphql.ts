@@ -55,17 +55,17 @@ return {
       {
         "count": "count",
         "cursor": "cursor",
-        "direction": "forward",
+        "direction": "backward",
         "path": (v0/*: any*/)
       }
     ],
     "refetch": {
       "connection": {
-        "forward": {
+        "forward": null,
+        "backward": {
           "count": "count",
           "cursor": "cursor"
         },
-        "backward": null,
         "path": (v0/*: any*/)
       },
       "fragmentPathInResult": [
@@ -140,14 +140,14 @@ return {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
-              "name": "endCursor",
+              "name": "hasPreviousPage",
               "storageKey": null
             },
             {
               "alias": null,
               "args": null,
               "kind": "ScalarField",
-              "name": "hasNextPage",
+              "name": "startCursor",
               "storageKey": null
             }
           ],
@@ -161,5 +161,5 @@ return {
   "abstractKey": null
 };
 })();
-(node as any).hash = 'd7849d9325a79a8d3e493d5146a06b14';
+(node as any).hash = 'f17fd53f8c46d3c0cea21ed603a05b62';
 export default node;
