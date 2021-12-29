@@ -1,13 +1,19 @@
 import { useAuth } from '../../../providers/auth'
-import MessageGroup from '../../../common/MessageGroup'
+import Message from '../../../common/Message'
 import { useFragment, graphql } from 'react-relay'
 import { RoomMessageItem_message$key } from './__generated__/RoomMessageItem_message.graphql'
 
 type RoomMessageItemProps = {
   messageRef: RoomMessageItem_message$key
+  previousMessageAuthorId?: string
+  nextMessageAuthorId?: string
 }
 
-const RoomMessageItem: React.FC<RoomMessageItemProps> = ({ messageRef }) => {
+const RoomMessageItem: React.FC<RoomMessageItemProps> = ({
+  messageRef,
+  previousMessageAuthorId,
+  nextMessageAuthorId,
+}) => {
   const { id } = useAuth()
   const message = useFragment(
     graphql`
@@ -21,11 +27,13 @@ const RoomMessageItem: React.FC<RoomMessageItemProps> = ({ messageRef }) => {
   )
 
   return (
-    <MessageGroup
+    <Message
       key={message.id}
       avatar={message.author.avatar || undefined}
       side={message.author.id === id ? 'right' : 'left'}
-      messages={[message.content]}
+      message={message.content}
+      first={previousMessageAuthorId !== message.author.id}
+      last={nextMessageAuthorId !== message.author.id}
     />
   )
 }

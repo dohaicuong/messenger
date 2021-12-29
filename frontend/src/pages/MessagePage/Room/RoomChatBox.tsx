@@ -29,6 +29,26 @@ const RoomChatBox = () => {
       }
     }
   `)
+  const sendMessage = (content: string, cb?: () => void) => {
+    sendMessageCommit({
+      variables: {
+        input: {
+          content: content,
+          roomId: id
+        },
+        connections: [
+          `client:${id}:__RoomMessageList_room_messages_connection`
+        ]
+      },
+      onCompleted: (res, errors) => {
+        if (errors?.length) return errors.forEach(error => enqueueSnackbar(error.message, { variant: 'error' }))
+
+        cb?.()
+        // console.log(contentInputRef.current)
+        // contentInputRef.current?.focus?.()
+      }
+    })
+  }
 
   const methods = useForm<Omit<MessageSendInput, 'roomId'>>()
   const contentInputRef = useRef<HTMLDivElement | null>(null)
@@ -40,24 +60,11 @@ const RoomChatBox = () => {
   }
 
   const onSubmit: SubmitHandler<Omit<MessageSendInput, 'roomId'>> = data => {
-    sendMessageCommit({
-      variables: {
-        input: {
-          content: data.content,
-          roomId: id
-        },
-        connections: [
-          `client:${id}:__RoomMessageList_room_messages_connection`
-        ]
-      },
-      onCompleted: (res, errors) => {
-        if (errors?.length) return errors.forEach(error => enqueueSnackbar(error.message, { variant: 'error' }))
+    sendMessage(data.content, methods.reset)
+  }
 
-        methods.reset()
-        // console.log(contentInputRef.current)
-        // contentInputRef.current?.focus?.()
-      }
-    })
+  const handleLikeButton = () => {
+    sendMessage(':__MESSENGER_LIKE_MESSAGE__:')
   }
 
   return (
@@ -98,7 +105,7 @@ const RoomChatBox = () => {
         </form>
       </FormProvider>
 
-      <IconButton disabled>
+      <IconButton onClick={handleLikeButton}>
         <ThumbUp />
       </IconButton>
     </Toolbar>

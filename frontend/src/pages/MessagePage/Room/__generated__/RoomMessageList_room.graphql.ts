@@ -11,6 +11,9 @@ export type RoomMessageList_room = {
         readonly edges: ReadonlyArray<{
             readonly node: {
                 readonly id: string;
+                readonly author: {
+                    readonly id: string;
+                };
                 readonly " $fragmentRefs": FragmentRefs<"RoomMessageItem_message">;
             } | null;
         } | null> | null;
@@ -106,6 +109,18 @@ return {
                 {
                   "alias": null,
                   "args": null,
+                  "concreteType": "User",
+                  "kind": "LinkedField",
+                  "name": "author",
+                  "plural": false,
+                  "selections": [
+                    (v1/*: any*/)
+                  ],
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
                   "kind": "ScalarField",
                   "name": "__typename",
                   "storageKey": null
@@ -161,5 +176,5 @@ return {
   "abstractKey": null
 };
 })();
-(node as any).hash = 'f17fd53f8c46d3c0cea21ed603a05b62';
+(node as any).hash = '93cd311a0005b6113ab64be81ec4a218';
 export default node;

@@ -49,6 +49,7 @@ const RoomMessageList: React.FC<RoomMessageListProps> = ({ roomRef }) => {
           edges {
             node {
               id
+              author { id }
               ...RoomMessageItem_message
             }
           }
@@ -103,10 +104,17 @@ const RoomMessageList: React.FC<RoomMessageListProps> = ({ roomRef }) => {
         </LoadingButton>
       )}
 
-      {data.messages.edges?.map(edge => {
+      {data.messages.edges?.map((edge, index, edges) => {
         if(!edge?.node) return
 
-        return <RoomMessageItem key={edge.node.id} messageRef={edge.node} />
+        return (
+          <RoomMessageItem
+            key={edge.node.id}
+            messageRef={edge.node}
+            previousMessageAuthorId={edges[index - 1]?.node?.author.id}
+            nextMessageAuthorId={edges[index + 1]?.node?.author.id}
+          />
+        )
       })}
 
       <div ref={bottomRef} />
