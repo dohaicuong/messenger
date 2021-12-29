@@ -1,4 +1,5 @@
 import { extendType, inputObjectType, nonNull, objectType } from 'nexus'
+import { getMessageSentEvent, MessageSentEventPayload } from '.'
 
 export const MessageSendInput = inputObjectType({
   name: 'MessageSendInput',
@@ -21,8 +22,7 @@ export const MessageSendMutation = extendType({
     t.field('messageSend', {
       args: { input: nonNull('MessageSendInput') },
       type: 'MessageSendPayload',
-      resolve: async (_, { input }, { prisma, userId }) => {
-        // user is in room
+      resolve: async (_, { input }, { prisma, userId, pubsub }) => {
         const isInRoom = await prisma.room.findMany({
           where: {
             AND: [
@@ -51,6 +51,15 @@ export const MessageSendMutation = extendType({
             content: input.content,
             room: { connect: { id: input.roomId } },
             author: { connect: { id: userId } }
+          }
+        })
+
+        const topic = getMessageSentEvent(input.roomId)
+        // @ts-ignore
+        pubsub.publish<MessageSentEventPayload>({
+          topic,
+          payload: {
+            message: newMessage
           }
         })
 

@@ -42,6 +42,9 @@ export interface NexusGenInputs {
     content: string; // String!
     roomId: NexusGenScalars['RelayId']; // RelayId!
   }
+  MessageSentInput: { // input type
+    roomId: NexusGenScalars['RelayId']; // RelayId!
+  }
   OthersConnectionWhere: { // input type
     name?: string | null; // String
   }
@@ -93,6 +96,9 @@ export interface NexusGenObjects {
   MessageSendPayload: { // root type
     message?: NexusGenRootTypes['Message'] | null; // Message
   }
+  MessageSentPayload: { // root type
+    message?: NexusGenRootTypes['Message'] | null; // Message
+  }
   Mutation: {};
   PageInfo: { // root type
     endCursor?: string | null; // String
@@ -116,6 +122,7 @@ export interface NexusGenObjects {
     cursor: string; // String!
     node?: NexusGenRootTypes['Room'] | null; // Room
   }
+  Subscription: {};
   User: { // root type
     avatar?: string | null; // String
     email: string; // String!
@@ -168,6 +175,9 @@ export interface NexusGenFieldTypes {
   MessageSendPayload: { // field return type
     message: NexusGenRootTypes['Message'] | null; // Message
   }
+  MessageSentPayload: { // field return type
+    message: NexusGenRootTypes['Message'] | null; // Message
+  }
   Mutation: { // field return type
     login: NexusGenRootTypes['UserLoginPayload']; // UserLoginPayload!
     messageSend: NexusGenRootTypes['MessageSendPayload'] | null; // MessageSendPayload
@@ -205,6 +215,9 @@ export interface NexusGenFieldTypes {
   RoomEdge: { // field return type
     cursor: string; // String!
     node: NexusGenRootTypes['Room'] | null; // Room
+  }
+  Subscription: { // field return type
+    messageSent: NexusGenRootTypes['MessageSentPayload'] | null; // MessageSentPayload
   }
   User: { // field return type
     avatar: string | null; // String
@@ -254,6 +267,9 @@ export interface NexusGenFieldTypeNames {
   MessageSendPayload: { // field return type name
     message: 'Message'
   }
+  MessageSentPayload: { // field return type name
+    message: 'Message'
+  }
   Mutation: { // field return type name
     login: 'UserLoginPayload'
     messageSend: 'MessageSendPayload'
@@ -291,6 +307,9 @@ export interface NexusGenFieldTypeNames {
   RoomEdge: { // field return type name
     cursor: 'String'
     node: 'Room'
+  }
+  Subscription: { // field return type name
+    messageSent: 'MessageSentPayload'
   }
   User: { // field return type name
     avatar: 'String'
@@ -350,6 +369,11 @@ export interface NexusGenArgTypes {
     messages: { // args
       after?: string | null; // String
       first: number; // Int!
+    }
+  }
+  Subscription: {
+    messageSent: { // args
+      input: NexusGenInputs['MessageSentInput']; // MessageSentInput!
     }
   }
   User: {

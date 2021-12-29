@@ -2,7 +2,7 @@ import fastify from 'fastify'
 import mercurius from 'mercurius'
 import cors from 'fastify-cors'
 import { schema } from './schema'
-import { context } from './context'
+import { context, subscriptionContext } from './context'
 
 export const server = fastify()
 
@@ -10,8 +10,13 @@ server.register(cors)
 
 server.register(mercurius, {
   schema: schema,
-  context,
+  
   graphiql: true,
+  context,
+  subscription: {
+    context: subscriptionContext
+  },
+  
   errorFormatter: (err, ctx) => {
     const res = mercurius.defaultErrorFormatter(err, ctx)
 
