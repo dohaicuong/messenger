@@ -14,6 +14,7 @@
     "@mui/icons-material": "^5.2.5",
     "@mui/lab": "^5.0.0-alpha.61",
     "@mui/material": "^5.2.5",
+    "graphql-ws": "^5.5.5",
     "notistack": "^2.0.3",
     "react": "^18.0.0-beta-24dd07bd2-20211208",
     "react-dom": "^18.0.0-beta-24dd07bd2-20211208",
@@ -23,7 +24,6 @@
     "react-relay-network-modern": "^6.2.1",
     "react-router-dom": "6",
     "relay-runtime": "^12.0.0",
-    "subscriptions-transport-ws": "^0.11.0",
     "vite-plugin-relay": "^1.0.7"
   },
   "devDependencies": {

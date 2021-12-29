@@ -10,15 +10,11 @@ import {
   urlMiddleware,
   authMiddleware,
 } from 'react-relay-network-modern'
-import { SubscriptionClient } from 'subscriptions-transport-ws'
+import { createClient } from 'graphql-ws'
 
-const subscriptionClient = new SubscriptionClient(
-  import.meta.env.VITE_API_SUBSCRIPTION_ENDPOINT,
-  {
-    reconnect: true,
-  },
-  WebSocket
-)
+const subscriptionsClient = createClient({
+  url: import.meta.env.VITE_API_SUBSCRIPTION_ENDPOINT
+})
 
 const network = new RelayNetworkLayer(
   [
@@ -35,14 +31,36 @@ const network = new RelayNetworkLayer(
   ],
   {
     noThrow: true,
+    // @ts-ignore
     subscribeFn: (operation, variables) => {
-      const subscribeObservable = subscriptionClient.request({
-        query: operation.text || undefined,
-        operationName: operation.name,
-        variables,
-      })
+      return Observable.create(sink => {
+        if (!operation.text) {
+          return sink.error(new Error('Operation text cannot be empty'));
+        }
 
-      return Observable.from(subscribeObservable as any) as any
+        return subscriptionsClient.subscribe(
+          {
+            operationName: operation.name,
+            query: operation.text,
+            variables
+          },
+          {
+            ...sink,
+            error: (err: any) => {
+              // GraphQLError[]
+              if (Array.isArray(err)) {
+                return sink.error(new Error(err.map(({ message }) => message).join(', ')))
+              }
+
+              if (err instanceof CloseEvent) {
+                return sink.error(new Error(`Socket closed with event ${err.code} ${err.reason || ''}`))
+              }
+
+              return sink.error(err)
+            }
+          }
+        )
+      })
     }
   }
 )
