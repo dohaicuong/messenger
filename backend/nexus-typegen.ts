@@ -38,6 +38,10 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  MessageSendInput: { // input type
+    content: string; // String!
+    roomId: NexusGenScalars['RelayId']; // RelayId!
+  }
   OthersConnectionWhere: { // input type
     name?: string | null; // String
   }
@@ -75,6 +79,20 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  Message: { // root type
+    content: string; // String!
+  }
+  MessageConnection: { // root type
+    edges?: Array<NexusGenRootTypes['MessageEdge'] | null> | null; // [MessageEdge]
+    pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
+  }
+  MessageEdge: { // root type
+    cursor: string; // String!
+    node?: NexusGenRootTypes['Message'] | null; // Message
+  }
+  MessageSendPayload: { // root type
+    message?: NexusGenRootTypes['Message'] | null; // Message
+  }
   Mutation: {};
   PageInfo: { // root type
     endCursor?: string | null; // String
@@ -123,7 +141,7 @@ export interface NexusGenObjects {
 }
 
 export interface NexusGenInterfaces {
-  Node: NexusGenRootTypes['Room'] | NexusGenRootTypes['User'];
+  Node: NexusGenRootTypes['Message'] | NexusGenRootTypes['Room'] | NexusGenRootTypes['User'];
 }
 
 export interface NexusGenUnions {
@@ -134,8 +152,25 @@ export type NexusGenRootTypes = NexusGenInterfaces & NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
+  Message: { // field return type
+    author: NexusGenRootTypes['User']; // User!
+    content: string; // String!
+    id: string; // ID!
+  }
+  MessageConnection: { // field return type
+    edges: Array<NexusGenRootTypes['MessageEdge'] | null> | null; // [MessageEdge]
+    pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
+  }
+  MessageEdge: { // field return type
+    cursor: string; // String!
+    node: NexusGenRootTypes['Message'] | null; // Message
+  }
+  MessageSendPayload: { // field return type
+    message: NexusGenRootTypes['Message'] | null; // Message
+  }
   Mutation: { // field return type
     login: NexusGenRootTypes['UserLoginPayload']; // UserLoginPayload!
+    messageSend: NexusGenRootTypes['MessageSendPayload'] | null; // MessageSendPayload
     roomAddUser: NexusGenRootTypes['RoomAddUserPayload'] | null; // RoomAddUserPayload
     roomCreate: NexusGenRootTypes['RoomCreatePayload'] | null; // RoomCreatePayload
     signup: NexusGenRootTypes['UserSignupPayload']; // UserSignupPayload!
@@ -153,6 +188,7 @@ export interface NexusGenFieldTypes {
   Room: { // field return type
     host: NexusGenRootTypes['User']; // User!
     id: string; // ID!
+    messages: NexusGenRootTypes['MessageConnection']; // MessageConnection!
     name: string | null; // String
     participants: NexusGenRootTypes['User'][]; // [User!]!
   }
@@ -202,8 +238,25 @@ export interface NexusGenFieldTypes {
 }
 
 export interface NexusGenFieldTypeNames {
+  Message: { // field return type name
+    author: 'User'
+    content: 'String'
+    id: 'ID'
+  }
+  MessageConnection: { // field return type name
+    edges: 'MessageEdge'
+    pageInfo: 'PageInfo'
+  }
+  MessageEdge: { // field return type name
+    cursor: 'String'
+    node: 'Message'
+  }
+  MessageSendPayload: { // field return type name
+    message: 'Message'
+  }
   Mutation: { // field return type name
     login: 'UserLoginPayload'
+    messageSend: 'MessageSendPayload'
     roomAddUser: 'RoomAddUserPayload'
     roomCreate: 'RoomCreatePayload'
     signup: 'UserSignupPayload'
@@ -221,6 +274,7 @@ export interface NexusGenFieldTypeNames {
   Room: { // field return type name
     host: 'User'
     id: 'ID'
+    messages: 'MessageConnection'
     name: 'String'
     participants: 'User'
   }
@@ -274,6 +328,9 @@ export interface NexusGenArgTypes {
     login: { // args
       input: NexusGenInputs['UserLoginInput']; // UserLoginInput!
     }
+    messageSend: { // args
+      input: NexusGenInputs['MessageSendInput']; // MessageSendInput!
+    }
     roomAddUser: { // args
       input: NexusGenInputs['RoomAddUserInput']; // RoomAddUserInput!
     }
@@ -287,6 +344,12 @@ export interface NexusGenArgTypes {
   Query: {
     node: { // args
       id: string; // ID!
+    }
+  }
+  Room: {
+    messages: { // args
+      after?: string | null; // String
+      first: number; // Int!
     }
   }
   User: {
@@ -303,10 +366,11 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractTypeMembers {
-  Node: "Room" | "User"
+  Node: "Message" | "Room" | "User"
 }
 
 export interface NexusGenTypeInterfaces {
+  Message: "Node"
   Room: "Node"
   User: "Node"
 }

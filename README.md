@@ -24,3 +24,7 @@ cp .env.example .env
 
 yarn dev
 ```
+
+## TODO
+- backward pagination for messages
+- graphql subscription for MESSAGE_CREATED, ROOM_CREATED

@@ -16,7 +16,7 @@ const SignupPage = () => {
     mutation SignupPageMutation($input: UserSignupInput!) {
       signup(input: $input) {
         jwt
-        user { firstName }
+        user { id firstName }
       }
     }
   `)
@@ -30,7 +30,7 @@ const SignupPage = () => {
       onCompleted: (res, errors) => {
         if (errors?.length) return errors.forEach(error => enqueueSnackbar(error.message, { variant: 'error' }))
 
-        signin(res.signup.jwt)
+        signin(res.signup.jwt, res.signup.user.id)
         enqueueSnackbar(`Welcome, ${res.signup.user.firstName}`, { variant: 'success' })
       }
     })

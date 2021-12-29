@@ -49,6 +49,7 @@ const RoomList: React.FC<RoomListProps> = ({ meRef }) => {
               </InputAdornment>
             )
           }}
+          autoComplete='off'
           placeholder='Search Messenger'
           fullWidth
           disabled

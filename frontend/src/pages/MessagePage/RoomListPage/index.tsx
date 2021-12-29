@@ -1,4 +1,5 @@
-import { Divider, Grid } from "@mui/material"
+import { CircularProgress, Divider, Grid } from "@mui/material"
+import { Suspense } from 'react'
 import { useLazyLoadQuery, graphql } from "react-relay"
 import { Outlet } from "react-router-dom"
 import RoomList from "./RoomList"
@@ -25,7 +26,15 @@ const RoomListPage = () => {
       </Grid>
       <Divider orientation='vertical' flexItem />
       <Grid item xs>
-        <Outlet />
+        <Suspense
+          fallback={
+            <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <CircularProgress />
+            </div>
+          }
+        >
+          <Outlet />
+        </Suspense>
       </Grid>
     </Grid>
   )

@@ -1,0 +1,38 @@
+/* tslint:disable */
+/* eslint-disable */
+// @ts-nocheck
+
+import { ReaderFragment } from "relay-runtime";
+
+import { FragmentRefs } from "relay-runtime";
+export type RoomHeader_room = {
+    readonly name: string | null;
+    readonly " $refType": "RoomHeader_room";
+};
+export type RoomHeader_room$data = RoomHeader_room;
+export type RoomHeader_room$key = {
+    readonly " $data"?: RoomHeader_room$data | undefined;
+    readonly " $fragmentRefs": FragmentRefs<"RoomHeader_room">;
+};
+
+
+
+const node: ReaderFragment = {
+  "argumentDefinitions": [],
+  "kind": "Fragment",
+  "metadata": null,
+  "name": "RoomHeader_room",
+  "selections": [
+    {
+      "alias": null,
+      "args": null,
+      "kind": "ScalarField",
+      "name": "name",
+      "storageKey": null
+    }
+  ],
+  "type": "Room",
+  "abstractKey": null
+};
+(node as any).hash = 'd6b2c34e6536918bb679d2d37263a83c';
+export default node;

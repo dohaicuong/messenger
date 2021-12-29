@@ -2,8 +2,46 @@
 ### Do not make changes to this file directly
 
 
+type Message implements Node {
+  author: User!
+  content: String!
+
+  """Relay ID"""
+  id: ID!
+}
+
+type MessageConnection {
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-Edge-Types
+  """
+  edges: [MessageEdge]
+
+  """
+  https://facebook.github.io/relay/graphql/connections.htm#sec-undefined.PageInfo
+  """
+  pageInfo: PageInfo!
+}
+
+type MessageEdge {
+  """https://facebook.github.io/relay/graphql/connections.htm#sec-Cursor"""
+  cursor: String!
+
+  """https://facebook.github.io/relay/graphql/connections.htm#sec-Node"""
+  node: Message
+}
+
+input MessageSendInput {
+  content: String!
+  roomId: RelayId!
+}
+
+type MessageSendPayload {
+  message: Message
+}
+
 type Mutation {
   login(input: UserLoginInput!): UserLoginPayload!
+  messageSend(input: MessageSendInput!): MessageSendPayload
   roomAddUser(input: RoomAddUserInput!): RoomAddUserPayload
   roomCreate(input: RoomCreateInput!): RoomCreatePayload
   signup(input: UserSignupInput!): UserSignupPayload!
@@ -56,6 +94,13 @@ type Room implements Node {
 
   """Relay ID"""
   id: ID!
+  messages(
+    """Returns the elements in the list that come after the specified cursor"""
+    after: String
+
+    """Returns the first n elements from the list."""
+    first: Int!
+  ): MessageConnection!
   name: String
   participants: [User!]!
 }

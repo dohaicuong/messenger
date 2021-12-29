@@ -18,6 +18,7 @@ export type SignupPageMutationResponse = {
     readonly signup: {
         readonly jwt: string;
         readonly user: {
+            readonly id: string;
             readonly firstName: string;
         };
     };
@@ -36,8 +37,8 @@ mutation SignupPageMutation(
   signup(input: $input) {
     jwt
     user {
-      firstName
       id
+      firstName
     }
   }
 }
@@ -53,57 +54,62 @@ var v0 = [
 ],
 v1 = [
   {
-    "kind": "Variable",
-    "name": "input",
-    "variableName": "input"
-  }
-],
-v2 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "jwt",
-  "storageKey": null
-},
-v3 = {
-  "alias": null,
-  "args": null,
-  "kind": "ScalarField",
-  "name": "firstName",
-  "storageKey": null
-};
-return {
-  "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
-    "kind": "Fragment",
-    "metadata": null,
-    "name": "SignupPageMutation",
+    "alias": null,
+    "args": [
+      {
+        "kind": "Variable",
+        "name": "input",
+        "variableName": "input"
+      }
+    ],
+    "concreteType": "UserSignupPayload",
+    "kind": "LinkedField",
+    "name": "signup",
+    "plural": false,
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
-        "concreteType": "UserSignupPayload",
+        "args": null,
+        "kind": "ScalarField",
+        "name": "jwt",
+        "storageKey": null
+      },
+      {
+        "alias": null,
+        "args": null,
+        "concreteType": "User",
         "kind": "LinkedField",
-        "name": "signup",
+        "name": "user",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
           {
             "alias": null,
             "args": null,
-            "concreteType": "User",
-            "kind": "LinkedField",
-            "name": "user",
-            "plural": false,
-            "selections": [
-              (v3/*: any*/)
-            ],
+            "kind": "ScalarField",
+            "name": "id",
+            "storageKey": null
+          },
+          {
+            "alias": null,
+            "args": null,
+            "kind": "ScalarField",
+            "name": "firstName",
             "storageKey": null
           }
         ],
         "storageKey": null
       }
     ],
+    "storageKey": null
+  }
+];
+return {
+  "fragment": {
+    "argumentDefinitions": (v0/*: any*/),
+    "kind": "Fragment",
+    "metadata": null,
+    "name": "SignupPageMutation",
+    "selections": (v1/*: any*/),
     "type": "Mutation",
     "abstractKey": null
   },
@@ -112,49 +118,17 @@ return {
     "argumentDefinitions": (v0/*: any*/),
     "kind": "Operation",
     "name": "SignupPageMutation",
-    "selections": [
-      {
-        "alias": null,
-        "args": (v1/*: any*/),
-        "concreteType": "UserSignupPayload",
-        "kind": "LinkedField",
-        "name": "signup",
-        "plural": false,
-        "selections": [
-          (v2/*: any*/),
-          {
-            "alias": null,
-            "args": null,
-            "concreteType": "User",
-            "kind": "LinkedField",
-            "name": "user",
-            "plural": false,
-            "selections": [
-              (v3/*: any*/),
-              {
-                "alias": null,
-                "args": null,
-                "kind": "ScalarField",
-                "name": "id",
-                "storageKey": null
-              }
-            ],
-            "storageKey": null
-          }
-        ],
-        "storageKey": null
-      }
-    ]
+    "selections": (v1/*: any*/)
   },
   "params": {
-    "cacheID": "311a35bbcac8c76ca2500d53d40e8c59",
+    "cacheID": "ca24f440daca81215689dba97a6fc21a",
     "id": null,
     "metadata": {},
     "name": "SignupPageMutation",
     "operationKind": "mutation",
-    "text": "mutation SignupPageMutation(\n  $input: UserSignupInput!\n) {\n  signup(input: $input) {\n    jwt\n    user {\n      firstName\n      id\n    }\n  }\n}\n"
+    "text": "mutation SignupPageMutation(\n  $input: UserSignupInput!\n) {\n  signup(input: $input) {\n    jwt\n    user {\n      id\n      firstName\n    }\n  }\n}\n"
   }
 };
 })();
-(node as any).hash = 'db1820c2cbe433960d935e364d83e7a9';
+(node as any).hash = 'f450bfa3e1d4b4250148c7d950d4b7d5';
 export default node;
