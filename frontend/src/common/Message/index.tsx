@@ -1,5 +1,6 @@
 import { Avatar, Grid, styled, Typography } from '@mui/material'
 import clsx from 'clsx'
+import { useMemo } from 'react'
 import Like from '../Like'
 
 type MessageProps = {
@@ -17,6 +18,8 @@ const Message: React.FC<MessageProps> = ({
   first,
   last
 }) => {
+  const isLikeMessage = useMemo(() => message === ':__MESSENGER_LIKE_MESSAGE__:', [message])
+
   return (
     <Grid
       container
@@ -27,7 +30,7 @@ const Message: React.FC<MessageProps> = ({
         <Grid
           item
           display='flex'
-          alignItems={message === ':__MESSENGER_LIKE_MESSAGE__:' ? 'flex-end' : 'flex-start'}
+          alignItems={isLikeMessage ? 'flex-end' : 'flex-start'}
         >
           <MessageAvatar src={avatar} />
         </Grid>
@@ -39,7 +42,7 @@ const Message: React.FC<MessageProps> = ({
             justifyContent: side === 'right' ? 'flex-end' : 'flex-start'
           }}
         >
-          {message === ':__MESSENGER_LIKE_MESSAGE__:'
+          {isLikeMessage
             ? (
               <div style={{ height: 56, width: 56 }}>
                 <Like />

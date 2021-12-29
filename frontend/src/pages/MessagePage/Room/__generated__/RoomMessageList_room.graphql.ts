@@ -14,6 +14,7 @@ export type RoomMessageList_room = {
                 readonly author: {
                     readonly id: string;
                 };
+                readonly content: string;
                 readonly " $fragmentRefs": FragmentRefs<"RoomMessageItem_message">;
             } | null;
         } | null> | null;
@@ -122,6 +123,13 @@ return {
                   "alias": null,
                   "args": null,
                   "kind": "ScalarField",
+                  "name": "content",
+                  "storageKey": null
+                },
+                {
+                  "alias": null,
+                  "args": null,
+                  "kind": "ScalarField",
                   "name": "__typename",
                   "storageKey": null
                 },
@@ -176,5 +184,5 @@ return {
   "abstractKey": null
 };
 })();
-(node as any).hash = '93cd311a0005b6113ab64be81ec4a218';
+(node as any).hash = '121417ecd098f0319aefe25f53bdc290';
 export default node;

@@ -50,6 +50,7 @@ const RoomMessageList: React.FC<RoomMessageListProps> = ({ roomRef }) => {
             node {
               id
               author { id }
+              content
               ...RoomMessageItem_message
             }
           }
@@ -111,8 +112,8 @@ const RoomMessageList: React.FC<RoomMessageListProps> = ({ roomRef }) => {
           <RoomMessageItem
             key={edge.node.id}
             messageRef={edge.node}
-            previousMessageAuthorId={edges[index - 1]?.node?.author.id}
-            nextMessageAuthorId={edges[index + 1]?.node?.author.id}
+            previousMessage={edges[index - 1]?.node as any}
+            nextMessage={edges[index + 1]?.node as any}
           />
         )
       })}

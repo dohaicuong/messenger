@@ -56,6 +56,7 @@ fragment RoomMessageList_room on Room {
         author {
           id
         }
+        content
         ...RoomMessageItem_message
         __typename
       }
@@ -282,12 +283,12 @@ return {
     ]
   },
   "params": {
-    "cacheID": "2ee4f98878140a16dd341355d1986e90",
+    "cacheID": "565f51f47593281cb1a85d51f7d34a4a",
     "id": null,
     "metadata": {},
     "name": "RoomQuery",
     "operationKind": "query",
-    "text": "query RoomQuery(\n  $id: ID!\n) {\n  room: node(id: $id) {\n    __typename\n    ... on Room {\n      ...RoomHeader_room\n      ...RoomMessageList_room\n    }\n    id\n  }\n}\n\nfragment RoomHeader_room on Room {\n  name\n}\n\nfragment RoomMessageItem_message on Message {\n  id\n  content\n  author {\n    id\n    avatar\n  }\n}\n\nfragment RoomMessageList_room on Room {\n  id\n  messages(last: 10) {\n    edges {\n      node {\n        id\n        author {\n          id\n        }\n        ...RoomMessageItem_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n"
+    "text": "query RoomQuery(\n  $id: ID!\n) {\n  room: node(id: $id) {\n    __typename\n    ... on Room {\n      ...RoomHeader_room\n      ...RoomMessageList_room\n    }\n    id\n  }\n}\n\nfragment RoomHeader_room on Room {\n  name\n}\n\nfragment RoomMessageItem_message on Message {\n  id\n  content\n  author {\n    id\n    avatar\n  }\n}\n\nfragment RoomMessageList_room on Room {\n  id\n  messages(last: 10) {\n    edges {\n      node {\n        id\n        author {\n          id\n        }\n        content\n        ...RoomMessageItem_message\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      hasPreviousPage\n      startCursor\n    }\n  }\n}\n"
   }
 };
 })();
