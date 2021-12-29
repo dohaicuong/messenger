@@ -53,7 +53,6 @@ const Navbar: React.FC<NavbarProps> = ({ userRef }) => {
           }
           label={user.firstName}
           sx={{ mr: 1 }}
-          onClick={console.log}
         />
 
         <IconButton

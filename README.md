@@ -26,5 +26,4 @@ yarn dev
 ```
 
 ## TODO
-- backward pagination for messages
 - graphql subscription for ROOM_CREATED
