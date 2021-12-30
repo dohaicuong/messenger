@@ -1,28 +1,33 @@
-import { Button, InputAdornment, List, styled, TextField } from "@mui/material"
+import { styled } from "@mui/material"
 import { LoadingButton } from '@mui/lab'
-import { Search } from '@mui/icons-material'
 import { usePaginationFragment, graphql } from "react-relay"
 import { RoomList_me$key } from "./__generated__/RoomList_me.graphql"
 import RoomItem from "./RoomItem"
-import RoomListHeader from "./RoomListHeader"
 import { useMatch, useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useDeferredValue, useEffect } from 'react'
+import { RoomListPaginationQuery } from './__generated__/RoomListPaginationQuery.graphql'
 
 type RoomListProps = {
   meRef: RoomList_me$key
+  searchTerm?: string
 }
 
-const RoomList: React.FC<RoomListProps> = ({ meRef }) => {
-  const { data, hasNext, isLoadingNext, loadNext } = usePaginationFragment(
+const RoomList: React.FC<RoomListProps> = ({ meRef, searchTerm }) => {
+  const { data, hasNext, isLoadingNext, loadNext, refetch } = usePaginationFragment<RoomListPaginationQuery, RoomList_me$key>(
     graphql`
       fragment RoomList_me on User
       @refetchable(queryName: "RoomListPaginationQuery")
       @argumentDefinitions(
         count: { type: "Int!", defaultValue: 10 }
         cursor: { type: "String" }
+        where: { type: "UserRoomConnectionWhere" }
       )
       {
-        rooms(first: $count, after: $cursor)
+        rooms(
+          first: $count
+          after: $cursor
+          where: $where
+        )
         @connection(key: "RoomList_me_rooms")
         {
           edges {
@@ -45,37 +50,23 @@ const RoomList: React.FC<RoomListProps> = ({ meRef }) => {
     if (match?.pathname && firstRoomId) navigate(firstRoomId)
   }, [match?.pathname, firstRoomId])
 
+
+  const deferredSearchTerm = useDeferredValue(searchTerm)
+  useEffect(() => {
+    refetch({ where: { name: deferredSearchTerm } })
+  }, [deferredSearchTerm])
+
   return (
-    <>
-      <RoomListHeader />
-
-      <div style={{ margin: '8px 16px' }}>
-        <TextField
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position='start'>
-                <Search />
-              </InputAdornment>
-            )
-          }}
-          autoComplete='off'
-          placeholder='Search Messenger'
-          fullWidth
-          disabled
-        />
-      </div>
-
-      <StyledList>
-        {data.rooms.edges?.map(edge => {
-          if (edge?.node?.id) return <RoomItem key={edge.node.id} roomRef={edge.node} />
-        })}
-        {hasNext && (
-          <LoadingButton fullWidth loading={isLoadingNext} onClick={handleLoadMore}>
-            Load more
-          </LoadingButton>
-        )}
-      </StyledList>
-    </>
+    <StyledList>
+      {data.rooms.edges?.map(edge => {
+        if (edge?.node?.id) return <RoomItem key={edge.node.id} roomRef={edge.node} />
+      })}
+      {hasNext && (
+        <LoadingButton fullWidth loading={isLoadingNext} onClick={handleLoadMore}>
+          Load more
+        </LoadingButton>
+      )}
+    </StyledList>
   )
 }
 

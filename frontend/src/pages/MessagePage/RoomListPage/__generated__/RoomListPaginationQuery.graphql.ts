@@ -5,9 +5,13 @@
 import { ConcreteRequest } from "relay-runtime";
 
 import { FragmentRefs } from "relay-runtime";
+export type UserRoomConnectionWhere = {
+    name?: string | null | undefined;
+};
 export type RoomListPaginationQueryVariables = {
     count: number;
     cursor?: string | null | undefined;
+    where?: UserRoomConnectionWhere | null | undefined;
     id: string;
 };
 export type RoomListPaginationQueryResponse = {
@@ -26,11 +30,12 @@ export type RoomListPaginationQuery = {
 query RoomListPaginationQuery(
   $count: Int! = 10
   $cursor: String
+  $where: UserRoomConnectionWhere
   $id: ID!
 ) {
   node(id: $id) {
     __typename
-    ...RoomList_me_1G22uz
+    ...RoomList_me_mjR8k
     id
   }
 }
@@ -40,8 +45,8 @@ fragment RoomItem_room on Room {
   name
 }
 
-fragment RoomList_me_1G22uz on User {
-  rooms(first: $count, after: $cursor) {
+fragment RoomList_me_mjR8k on User {
+  rooms(first: $count, after: $cursor, where: $where) {
     edges {
       node {
         id
@@ -60,45 +65,53 @@ fragment RoomList_me_1G22uz on User {
 */
 
 const node: ConcreteRequest = (function(){
-var v0 = [
-  {
-    "defaultValue": 10,
-    "kind": "LocalArgument",
-    "name": "count"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "cursor"
-  },
-  {
-    "defaultValue": null,
-    "kind": "LocalArgument",
-    "name": "id"
-  }
-],
-v1 = [
+var v0 = {
+  "defaultValue": 10,
+  "kind": "LocalArgument",
+  "name": "count"
+},
+v1 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "cursor"
+},
+v2 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "id"
+},
+v3 = {
+  "defaultValue": null,
+  "kind": "LocalArgument",
+  "name": "where"
+},
+v4 = [
   {
     "kind": "Variable",
     "name": "id",
     "variableName": "id"
   }
 ],
-v2 = {
+v5 = {
+  "kind": "Variable",
+  "name": "where",
+  "variableName": "where"
+},
+v6 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "__typename",
   "storageKey": null
 },
-v3 = {
+v7 = {
   "alias": null,
   "args": null,
   "kind": "ScalarField",
   "name": "id",
   "storageKey": null
 },
-v4 = [
+v8 = [
   {
     "kind": "Variable",
     "name": "after",
@@ -108,18 +121,24 @@ v4 = [
     "kind": "Variable",
     "name": "first",
     "variableName": "count"
-  }
+  },
+  (v5/*: any*/)
 ];
 return {
   "fragment": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/),
+      (v2/*: any*/),
+      (v3/*: any*/)
+    ],
     "kind": "Fragment",
     "metadata": null,
     "name": "RoomListPaginationQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v4/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
@@ -136,7 +155,8 @@ return {
                 "kind": "Variable",
                 "name": "cursor",
                 "variableName": "cursor"
-              }
+              },
+              (v5/*: any*/)
             ],
             "kind": "FragmentSpread",
             "name": "RoomList_me"
@@ -150,26 +170,31 @@ return {
   },
   "kind": "Request",
   "operation": {
-    "argumentDefinitions": (v0/*: any*/),
+    "argumentDefinitions": [
+      (v0/*: any*/),
+      (v1/*: any*/),
+      (v3/*: any*/),
+      (v2/*: any*/)
+    ],
     "kind": "Operation",
     "name": "RoomListPaginationQuery",
     "selections": [
       {
         "alias": null,
-        "args": (v1/*: any*/),
+        "args": (v4/*: any*/),
         "concreteType": null,
         "kind": "LinkedField",
         "name": "node",
         "plural": false,
         "selections": [
-          (v2/*: any*/),
-          (v3/*: any*/),
+          (v6/*: any*/),
+          (v7/*: any*/),
           {
             "kind": "InlineFragment",
             "selections": [
               {
                 "alias": null,
-                "args": (v4/*: any*/),
+                "args": (v8/*: any*/),
                 "concreteType": "RoomConnection",
                 "kind": "LinkedField",
                 "name": "rooms",
@@ -191,7 +216,7 @@ return {
                         "name": "node",
                         "plural": false,
                         "selections": [
-                          (v3/*: any*/),
+                          (v7/*: any*/),
                           {
                             "alias": null,
                             "args": null,
@@ -199,7 +224,7 @@ return {
                             "name": "name",
                             "storageKey": null
                           },
-                          (v2/*: any*/)
+                          (v6/*: any*/)
                         ],
                         "storageKey": null
                       },
@@ -243,8 +268,10 @@ return {
               },
               {
                 "alias": null,
-                "args": (v4/*: any*/),
-                "filters": null,
+                "args": (v8/*: any*/),
+                "filters": [
+                  "where"
+                ],
                 "handle": "connection",
                 "key": "RoomList_me_rooms",
                 "kind": "LinkedHandle",
@@ -260,14 +287,14 @@ return {
     ]
   },
   "params": {
-    "cacheID": "aecf29cdc84c1173bab4c8223be97cab",
+    "cacheID": "c6a8a0571146f8cb60418c5d12ed3f11",
     "id": null,
     "metadata": {},
     "name": "RoomListPaginationQuery",
     "operationKind": "query",
-    "text": "query RoomListPaginationQuery(\n  $count: Int! = 10\n  $cursor: String\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...RoomList_me_1G22uz\n    id\n  }\n}\n\nfragment RoomItem_room on Room {\n  id\n  name\n}\n\nfragment RoomList_me_1G22uz on User {\n  rooms(first: $count, after: $cursor) {\n    edges {\n      node {\n        id\n        ...RoomItem_room\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n"
+    "text": "query RoomListPaginationQuery(\n  $count: Int! = 10\n  $cursor: String\n  $where: UserRoomConnectionWhere\n  $id: ID!\n) {\n  node(id: $id) {\n    __typename\n    ...RoomList_me_mjR8k\n    id\n  }\n}\n\nfragment RoomItem_room on Room {\n  id\n  name\n}\n\nfragment RoomList_me_mjR8k on User {\n  rooms(first: $count, after: $cursor, where: $where) {\n    edges {\n      node {\n        id\n        ...RoomItem_room\n        __typename\n      }\n      cursor\n    }\n    pageInfo {\n      endCursor\n      hasNextPage\n    }\n  }\n  id\n}\n"
   }
 };
 })();
-(node as any).hash = 'c3510d837aa817bdf70b3f1ddc249952';
+(node as any).hash = '4cdb829e80a41125b0f46199544aea1c';
 export default node;

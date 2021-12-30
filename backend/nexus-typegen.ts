@@ -60,6 +60,9 @@ export interface NexusGenInputs {
     email: string; // String!
     password: string; // String!
   }
+  UserRoomConnectionWhere: { // input type
+    name?: string | null; // String
+  }
   UserSignupInput: { // input type
     avatar?: string | null; // String
     email: string; // String!
@@ -387,6 +390,7 @@ export interface NexusGenArgTypes {
     rooms: { // args
       after?: string | null; // String
       first: number; // Int!
+      where?: NexusGenInputs['UserRoomConnectionWhere'] | null; // UserRoomConnectionWhere
     }
   }
 }

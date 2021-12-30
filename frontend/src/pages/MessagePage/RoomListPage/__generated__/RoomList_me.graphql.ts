@@ -47,6 +47,11 @@ return {
       "defaultValue": null,
       "kind": "LocalArgument",
       "name": "cursor"
+    },
+    {
+      "defaultValue": null,
+      "kind": "LocalArgument",
+      "name": "where"
     }
   ],
   "kind": "Fragment",
@@ -79,7 +84,13 @@ return {
   "selections": [
     {
       "alias": "rooms",
-      "args": null,
+      "args": [
+        {
+          "kind": "Variable",
+          "name": "where",
+          "variableName": "where"
+        }
+      ],
       "concreteType": "RoomConnection",
       "kind": "LinkedField",
       "name": "__RoomList_me_rooms_connection",
@@ -161,5 +172,5 @@ return {
   "abstractKey": null
 };
 })();
-(node as any).hash = 'c3510d837aa817bdf70b3f1ddc249952';
+(node as any).hash = '4cdb829e80a41125b0f46199544aea1c';
 export default node;

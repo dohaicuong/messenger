@@ -184,6 +184,7 @@ type User implements Node {
 
     """Returns the first n elements from the list."""
     first: Int!
+    where: UserRoomConnectionWhere
   ): RoomConnection!
 }
 
@@ -215,6 +216,10 @@ input UserLoginInput {
 type UserLoginPayload {
   jwt: String!
   user: User!
+}
+
+input UserRoomConnectionWhere {
+  name: String
 }
 
 input UserSignupInput {

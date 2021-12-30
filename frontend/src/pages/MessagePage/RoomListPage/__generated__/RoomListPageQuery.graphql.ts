@@ -189,7 +189,9 @@ return {
           {
             "alias": null,
             "args": (v0/*: any*/),
-            "filters": null,
+            "filters": [
+              "where"
+            ],
             "handle": "connection",
             "key": "RoomList_me_rooms",
             "kind": "LinkedHandle",

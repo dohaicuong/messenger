@@ -1,4 +1,4 @@
-import { extendType, objectType } from 'nexus'
+import { extendType, inputObjectType, objectType } from 'nexus'
 import { connectionFromArray } from 'graphql-relay'
 import { Room, User } from '@prisma/client'
 
@@ -36,24 +36,86 @@ export const RoomModel = objectType({
   }
 })
 
+export const UserRoomConnectionWhere = inputObjectType({
+  name: 'UserRoomConnectionWhere',
+  definition: t => {
+    t.string('name')
+  }
+})
+
 export const UserExtendRooms = extendType({
   type: 'User',
   definition: t => {
     // @ts-ignore
     t.nonNull.connectionField('rooms', {
+      additionalArgs: {
+        where: 'UserRoomConnectionWhere'
+      },
       type: 'Room',
       // @ts-ignore
-      resolve: async (_, args, { prisma, userId }) => {
+      resolve: async (_, { where, ...args }, { prisma, userId }) => {
         const rooms = await prisma.room.findMany({
           where: {
-            OR: [
+            AND: [
+              where?.name ? {
+                OR: [
+                  {
+                    name: {
+                      contains: where?.name || undefined,
+                      mode: 'insensitive'
+                    },
+                  },
+                  {
+                    host: {
+                      OR: [
+                        {
+                          firstName: {
+                            contains: where?.name || undefined,
+                            mode: 'insensitive'
+                          }
+                        },
+                        // {
+                        //   lastName: {
+                        //     contains: where?.name || undefined,
+                        //     mode: 'insensitive'
+                        //   }
+                        // }
+                      ]
+                    },
+                  },
+                  {
+                    participants: {
+                      some: {
+                        OR: [
+                          {
+                            firstName: {
+                              contains: where?.name || undefined,
+                              mode: 'insensitive'
+                            }
+                          },
+                          // {
+                          //   lastName: {
+                          //     contains: where?.name || undefined,
+                          //     mode: 'insensitive'
+                          //   }
+                          // }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              } : {},
               {
-                host: { id: userId }
-              },
-              {
-                participants: {
-                  some: { id: userId }
-                }
+                OR: [
+                  {
+                    host: { id: userId }
+                  },
+                  {
+                    participants: {
+                      some: { id: userId }
+                    }
+                  }
+                ]
               }
             ]
           }
