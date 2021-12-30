@@ -8,7 +8,6 @@ import { AppPageQuery } from './__generated__/AppPageQuery.graphql'
 const AppPage = () => {
   const { token, signout } = useAuth()
   const navigate = useNavigate()
-  const match = useMatch('/app')
 
   const data = useLazyLoadQuery<AppPageQuery>(
     graphql`
@@ -25,9 +24,12 @@ const AppPage = () => {
   const key = JSON.stringify(data.me?.id || {})
   useEffect(() => {
     if (!data.me?.id) return signout()
+  }, [key])
 
+  const match = useMatch('/app')
+  useEffect(() => {
     if (match?.pathname) navigate('messages')
-  }, [key, match?.pathname])
+  }, [match?.pathname])
 
   if (!token || !data.me) return <Navigate to='/' />
 
