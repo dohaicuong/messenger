@@ -2,6 +2,7 @@ import { Call, Info, Videocam } from '@mui/icons-material'
 import { IconButton, Toolbar, Typography } from '@mui/material'
 import { useFragment, graphql } from 'react-relay'
 import { RoomHeader_room$key } from './__generated__/RoomHeader_room.graphql'
+import { Link } from 'react-router-dom'
 
 type RoomHeaderProps = {
   roomRef: RoomHeader_room$key
@@ -24,7 +25,7 @@ const RoomHeader: React.FC<RoomHeaderProps> = ({ roomRef }) => {
       <IconButton color='primary' disabled>
         <Call />
       </IconButton>
-      <IconButton color='primary' disabled>
+      <IconButton color='primary' component={Link} to='/app/call'>
         <Videocam />
       </IconButton>
       <IconButton color='primary' disabled>
