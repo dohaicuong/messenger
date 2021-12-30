@@ -22,7 +22,7 @@ const RoomList: React.FC<RoomListProps> = ({ meRef }) => {
         cursor: { type: "String" }
       )
       {
-        rooms (first: $count, after: $cursor)
+        rooms(first: $count, after: $cursor)
         @connection(key: "RoomList_me_rooms")
         {
           edges {
@@ -87,10 +87,10 @@ const StyledList = styled('div')(({ theme }) => `
   overflow-y: auto;
 
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 4px;
   }
   ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey; 
+    box-shadow: inset 0 0 2px grey; 
     border-radius: 8px;
   }
   ::-webkit-scrollbar-thumb {

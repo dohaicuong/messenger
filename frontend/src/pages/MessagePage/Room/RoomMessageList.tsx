@@ -131,20 +131,19 @@ const RoomMessageBoxContainer = styled('div')(({ theme }) => `
   margin: 16px 16px;
   
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 6px;
   }
   ::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 5px grey; 
+    box-shadow: inset 0 0 2px grey; 
     border-radius: 8px;
-    display: none
   }
   ::-webkit-scrollbar-thumb {
     border-radius: 8px;
-    background: ${theme.palette.background.paper};
+    background: ${theme.palette.grey[800]};
     transition: background 0.5s ease-in-out;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: ${theme.palette.grey[800]};
+    background: ${theme.palette.grey[700]};
     transition: background 0.5s ease-in-out;
   }
 `)
