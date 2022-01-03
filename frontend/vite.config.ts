@@ -4,7 +4,7 @@ import relay from 'vite-plugin-relay'
 
 export default defineConfig({
   server: {
-    https: false,
+    https: true,
   },
   define: {
     global: {

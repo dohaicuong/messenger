@@ -1,42 +1,60 @@
+import { Grid } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 
 const configuration = {'iceServers': [{'urls': 'stun:stun.l.google.com:19302'}]}
 
 const CallPage = () => {
-  const [stream] = useUserMedia({ video: true })
-  const videoRef = useRef<HTMLVideoElement | null>(null)
+  const [stream1] = useUserMedia({ video: true, audio: false })
+  const user1LocalVideoRef = useRef<HTMLVideoElement | null>(null)
   useEffect(() => {
-    if (videoRef.current && stream) {
-      videoRef.current.srcObject = stream
+    if (user1LocalVideoRef.current && stream1) {
+      user1LocalVideoRef.current.srcObject = stream1
     }
-  }, [stream?.id])
-
-  const [tracks, setTracks] = useState<MediaStreamTrack[]>()
+  }, [stream1?.id])
+  
+  const [video1Tracks, setVideo1Tracks] = useState<MediaStreamTrack[]>()
   useEffect(() => {
-    if (videoRef.current && stream) {
-      const _tracks = stream.getTracks()
-      setTracks(_tracks)
+    if (user1LocalVideoRef.current && stream1) {
+      const _tracks = stream1.getTracks()
+      setVideo1Tracks(_tracks)
     }
-  }, [stream?.id])
+  }, [stream1?.id])
 
+
+  const [stream2] = useUserMedia({ video: true, audio: false })
+  const user2LocalVideoRef = useRef<HTMLVideoElement | null>(null)
+  useEffect(() => {
+    if (user2LocalVideoRef.current && stream2) {
+      user2LocalVideoRef.current.srcObject = stream2
+    }
+  }, [stream2?.id])
+  const [video2Tracks, setVideo2Tracks] = useState<MediaStreamTrack[]>()
+  useEffect(() => {
+    if (user2LocalVideoRef.current && stream2) {
+      const _tracks = stream2.getTracks()
+      setVideo2Tracks(_tracks)
+    }
+  }, [stream2?.id])
+
+  
+  const user1RemoteVideoRef = useRef<HTMLVideoElement | null>(null)
+  const user2RemoteVideoRef = useRef<HTMLVideoElement | null>(null)
   const [localPeerConnection, offer, localCandidates] = usePeerConnection(
     configuration,
-    tracks
+    video1Tracks
   )
-
-  const remoteVideoRef = useRef<HTMLVideoElement | null>(null)
-  // useEffect(() => {
-  //   if(localPeerConnection) {
-  //     localPeerConnection.addEventListener('track', event => {
-  //       const [remoteStream] = event.streams
-  //       console.log(remoteStream)
-
-  //       if(remoteVideoRef.current) {
-  //         remoteVideoRef.current.srcObject = remoteStream 
-  //       }
-  //     })
-  //   }
-  // }, [localPeerConnection?.connectionState])
+  
+  useEffect(() => {
+    if(localPeerConnection) {
+      localPeerConnection.addEventListener('track', event => {
+        const stream = 
+          event.streams?.[0]
+          || new MediaStream([event.track])
+        
+        if(user1RemoteVideoRef.current) user1RemoteVideoRef.current.srcObject = stream
+      })
+    }
+  }, [localPeerConnection?.connectionState])
 
   
   useEffect(() => {
@@ -44,7 +62,8 @@ const CallPage = () => {
       if (!offer || !localCandidates?.length) return
 
       const remotePeerConnection = new RTCPeerConnection(configuration)
-      
+      video2Tracks?.forEach(track => remotePeerConnection.addTrack(track))
+
       const _candidates: RTCIceCandidate[] = []
       let _answer: RTCSessionDescriptionInit
       remotePeerConnection.addEventListener('icecandidate', event => {
@@ -64,8 +83,11 @@ const CallPage = () => {
         }
       })
       remotePeerConnection.addEventListener('track', event => {
-        const [remoteStream] = event.streams
-        console.log(remoteStream)
+        const remoteStream = 
+          event.streams?.[0]
+          || new MediaStream([event.track])
+        
+        if(user2RemoteVideoRef.current) user2RemoteVideoRef.current.srcObject = remoteStream
       })
 
       await remotePeerConnection.setRemoteDescription(new RTCSessionDescription(offer))
@@ -82,10 +104,19 @@ const CallPage = () => {
   }, [offer?.type])
 
   return (
-    <>
-      <video ref={videoRef} autoPlay playsInline />
-      <video ref={remoteVideoRef} autoPlay playsInline />
-    </>
+    <Grid container spacing={2}>
+      <Grid item xs={1} />
+      <Grid item xs={5} style={{ textAlign: 'center' }}>LOCAL</Grid>
+      <Grid item xs={6} style={{ textAlign: 'center' }}>REMOTE</Grid>
+
+      <Grid item xs={1}>USER 1</Grid>
+      <Grid item xs={5} component='video' ref={user1LocalVideoRef} autoPlay playsInline height={300} />
+      <Grid item xs={6} component='video' ref={user1RemoteVideoRef} autoPlay playsInline height={300} />
+
+      <Grid item xs={1}>USER 2</Grid>
+      <Grid item xs={5} component='video' ref={user2LocalVideoRef} autoPlay playsInline height={300} />
+      <Grid item xs={6} component='video' ref={user2RemoteVideoRef} autoPlay playsInline height={300} />
+    </Grid>
   )
 }
 
