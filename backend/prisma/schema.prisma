@@ -8,15 +8,17 @@ datasource db {
 }
 
 model User {
-  id                 String    @id @default(cuid())
-  email              String    @unique
+  id                 String     @id @default(cuid())
+  email              String     @unique
   password           String
   firstName          String
   lastName           String
   avatar             String?
-  hosted_rooms       Room[]    @relation("HostUser")
+  hosted_rooms       Room[]     @relation("HostUser")
   participated_rooms Room[]
   messages           Message[]
+  hosted_callRooms   CallRoom[] @relation("CallRoomHJost")
+  guested_callRoom   CallRoom[] @relation("CallRoomGuest")
 }
 
 model Room {
@@ -36,4 +38,18 @@ model Message {
   authorId String
   room     Room   @relation(fields: [roomId], references: [id])
   roomId   String
+}
+
+model CallRoom {
+  id String @id @default(cuid())
+
+  host              User     @relation(name: "CallRoomHJost", fields: [hostId], references: [id])
+  hostId            String
+  offer             String?
+  hostIceCandidates String[]
+
+  guest              User?    @relation(name: "CallRoomGuest", fields: [guestId], references: [id])
+  guestId            String?
+  answer             String?
+  guestIceCandidates String[]
 }

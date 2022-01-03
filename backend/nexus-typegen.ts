@@ -38,6 +38,22 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  CallJoinInput: { // input type
+    answer: string; // String!
+    iceCandidates: string[]; // [String!]!
+    roomId: NexusGenScalars['RelayId']; // RelayId!
+  }
+  CallJoinedInput: { // input type
+    callRoomId: NexusGenScalars['RelayId']; // RelayId!
+  }
+  CallRoomCreateInput: { // input type
+    guestId: NexusGenScalars['RelayId']; // RelayId!
+  }
+  CallStartInput: { // input type
+    iceCandidates: string[]; // [String!]!
+    offer: string; // String!
+    roomId: NexusGenScalars['RelayId']; // RelayId!
+  }
   MessageSendInput: { // input type
     content: string; // String!
     roomId: NexusGenScalars['RelayId']; // RelayId!
@@ -85,6 +101,24 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  CallJoinPayload: { // root type
+    callRoom?: NexusGenRootTypes['CallRoom'] | null; // CallRoom
+  }
+  CallJoinedPayload: { // root type
+    callRoom?: NexusGenRootTypes['CallRoom'] | null; // CallRoom
+  }
+  CallRoom: { // root type
+    answer?: string | null; // String
+    guestIceCandidates: string[]; // [String!]!
+    hostIceCandidates: string[]; // [String!]!
+    offer?: string | null; // String
+  }
+  CallRoomCreatePayload: { // root type
+    callRoom?: NexusGenRootTypes['CallRoom'] | null; // CallRoom
+  }
+  CallStartPayload: { // root type
+    callRoom?: NexusGenRootTypes['CallRoom'] | null; // CallRoom
+  }
   Message: { // root type
     content: string; // String!
   }
@@ -151,7 +185,7 @@ export interface NexusGenObjects {
 }
 
 export interface NexusGenInterfaces {
-  Node: NexusGenRootTypes['Message'] | NexusGenRootTypes['Room'] | NexusGenRootTypes['User'];
+  Node: NexusGenRootTypes['CallRoom'] | NexusGenRootTypes['Message'] | NexusGenRootTypes['Room'] | NexusGenRootTypes['User'];
 }
 
 export interface NexusGenUnions {
@@ -162,6 +196,27 @@ export type NexusGenRootTypes = NexusGenInterfaces & NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
+  CallJoinPayload: { // field return type
+    callRoom: NexusGenRootTypes['CallRoom'] | null; // CallRoom
+  }
+  CallJoinedPayload: { // field return type
+    callRoom: NexusGenRootTypes['CallRoom'] | null; // CallRoom
+  }
+  CallRoom: { // field return type
+    answer: string | null; // String
+    guest: NexusGenRootTypes['User'] | null; // User
+    guestIceCandidates: string[]; // [String!]!
+    host: NexusGenRootTypes['User']; // User!
+    hostIceCandidates: string[]; // [String!]!
+    id: string; // ID!
+    offer: string | null; // String
+  }
+  CallRoomCreatePayload: { // field return type
+    callRoom: NexusGenRootTypes['CallRoom'] | null; // CallRoom
+  }
+  CallStartPayload: { // field return type
+    callRoom: NexusGenRootTypes['CallRoom'] | null; // CallRoom
+  }
   Message: { // field return type
     author: NexusGenRootTypes['User']; // User!
     content: string; // String!
@@ -182,6 +237,9 @@ export interface NexusGenFieldTypes {
     message: NexusGenRootTypes['Message'] | null; // Message
   }
   Mutation: { // field return type
+    callJoin: NexusGenRootTypes['CallJoinPayload'] | null; // CallJoinPayload
+    callRoomCreate: NexusGenRootTypes['CallRoomCreatePayload'] | null; // CallRoomCreatePayload
+    callStart: NexusGenRootTypes['CallStartPayload'] | null; // CallStartPayload
     login: NexusGenRootTypes['UserLoginPayload']; // UserLoginPayload!
     messageSend: NexusGenRootTypes['MessageSendPayload'] | null; // MessageSendPayload
     roomAddUser: NexusGenRootTypes['RoomAddUserPayload'] | null; // RoomAddUserPayload
@@ -220,6 +278,7 @@ export interface NexusGenFieldTypes {
     node: NexusGenRootTypes['Room'] | null; // Room
   }
   Subscription: { // field return type
+    callJoined: NexusGenRootTypes['CallJoinedPayload'] | null; // CallJoinedPayload
     messageSent: NexusGenRootTypes['MessageSentPayload'] | null; // MessageSentPayload
   }
   User: { // field return type
@@ -254,6 +313,27 @@ export interface NexusGenFieldTypes {
 }
 
 export interface NexusGenFieldTypeNames {
+  CallJoinPayload: { // field return type name
+    callRoom: 'CallRoom'
+  }
+  CallJoinedPayload: { // field return type name
+    callRoom: 'CallRoom'
+  }
+  CallRoom: { // field return type name
+    answer: 'String'
+    guest: 'User'
+    guestIceCandidates: 'String'
+    host: 'User'
+    hostIceCandidates: 'String'
+    id: 'ID'
+    offer: 'String'
+  }
+  CallRoomCreatePayload: { // field return type name
+    callRoom: 'CallRoom'
+  }
+  CallStartPayload: { // field return type name
+    callRoom: 'CallRoom'
+  }
   Message: { // field return type name
     author: 'User'
     content: 'String'
@@ -274,6 +354,9 @@ export interface NexusGenFieldTypeNames {
     message: 'Message'
   }
   Mutation: { // field return type name
+    callJoin: 'CallJoinPayload'
+    callRoomCreate: 'CallRoomCreatePayload'
+    callStart: 'CallStartPayload'
     login: 'UserLoginPayload'
     messageSend: 'MessageSendPayload'
     roomAddUser: 'RoomAddUserPayload'
@@ -312,6 +395,7 @@ export interface NexusGenFieldTypeNames {
     node: 'Room'
   }
   Subscription: { // field return type name
+    callJoined: 'CallJoinedPayload'
     messageSent: 'MessageSentPayload'
   }
   User: { // field return type name
@@ -347,6 +431,15 @@ export interface NexusGenFieldTypeNames {
 
 export interface NexusGenArgTypes {
   Mutation: {
+    callJoin: { // args
+      input: NexusGenInputs['CallJoinInput']; // CallJoinInput!
+    }
+    callRoomCreate: { // args
+      input: NexusGenInputs['CallRoomCreateInput']; // CallRoomCreateInput!
+    }
+    callStart: { // args
+      input: NexusGenInputs['CallStartInput']; // CallStartInput!
+    }
     login: { // args
       input: NexusGenInputs['UserLoginInput']; // UserLoginInput!
     }
@@ -377,6 +470,9 @@ export interface NexusGenArgTypes {
     }
   }
   Subscription: {
+    callJoined: { // args
+      input: NexusGenInputs['CallJoinedInput']; // CallJoinedInput!
+    }
     messageSent: { // args
       input: NexusGenInputs['MessageSentInput']; // MessageSentInput!
     }
@@ -396,10 +492,11 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractTypeMembers {
-  Node: "Message" | "Room" | "User"
+  Node: "CallRoom" | "Message" | "Room" | "User"
 }
 
 export interface NexusGenTypeInterfaces {
+  CallRoom: "Node"
   Message: "Node"
   Room: "Node"
   User: "Node"
