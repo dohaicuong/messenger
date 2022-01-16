@@ -8,13 +8,18 @@ const Host = () => {
   const localVideoRef = useRef<HTMLVideoElement | null>(null)
   const remoteVideoRef = useRef<HTMLVideoElement | null>(null)
 
-  const [localStream] = useUserMedia({ video: true, audio: false })
   const [peerConnection] = usePeerConnection({ iceServers: [{'urls': 'stun:stun.l.google.com:19302'}] })
+  const [localStream] = useUserMedia({ video: true, audio: false })
   useStreamToVideo(localVideoRef.current, localStream)
-  const [offer, localCandidates] = useLocalSignalling(peerConnection, localStream)
 
+  const [remoteStream] = useRemoteStream(peerConnection)
+  useStreamToVideo(remoteVideoRef.current, remoteStream)
+  console.log({ remoteStream })
+
+  const [offer, localCandidates] = useLocalSignalling(peerConnection, localStream)
   console.log({ offer, localCandidates })
-  
+  // const [answer, remoteCandidates] = useWaitForCall(roomId, offer, localCandidates)
+  // useProcessRemote(answer, remoteCandidate)
 
   return (
     <Grid container spacing={2} marginTop={4}>
@@ -76,4 +81,22 @@ const useLocalSignalling = (peerConnection?: RTCPeerConnection, stream?: MediaSt
   }, [stream?.id])
 
   return [offer, candidates]
+}
+
+const useRemoteStream = (peerConnection?: RTCPeerConnection) => {
+  const [stream, setStream] = useState<MediaStream>()
+
+  useEffect(() => {
+    const handleTrackEvent = (event: RTCTrackEvent) => {
+      const stream = event.streams?.[0] || new MediaStream([event.track])
+      setStream(stream)
+    }
+
+    peerConnection?.addEventListener('track', handleTrackEvent)
+    return () => {
+      peerConnection?.removeEventListener('track', handleTrackEvent)
+    }
+  }, [peerConnection?.connectionState])
+
+  return [stream]
 }
