@@ -3,11 +3,12 @@ import { Routes, Route } from 'react-router-dom'
 
 import LoginPage from '../../pages/LoginPage'
 import AppPage from '../../pages/AppPage'
+import Host from '../../pages/CallPage/Host'
 const SignupPage = lazy(() => import('../../pages/SignupPage'))
 const RoomListPage = lazy(() => import('../../pages/MessagePage/RoomListPage'))
 const NewRoomPage = lazy(() => import('../../pages/MessagePage/NewRoomPage'))
 const Room = lazy(() => import('../../pages/MessagePage/Room'))
-const CallPage = lazy(() => import('../../pages/CallPage'))
+// const CallPage = lazy(() => import('../../pages/CallPage'))
 
 const Routing = () => {
   return (
@@ -19,8 +20,8 @@ const Routing = () => {
           <Route path='new' element={<NewRoomPage />} />
           <Route path=':id' element={<Room />} />
         </Route>
+        <Route path='call/host/:roomId' element={<Host />} />
       </Route>
-      <Route path='call' element={<CallPage />} />
     </Routes>
   )
 }

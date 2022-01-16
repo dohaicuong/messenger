@@ -1,8 +1,10 @@
 import { Call, Info, Videocam } from '@mui/icons-material'
 import { IconButton, Toolbar, Typography } from '@mui/material'
-import { useFragment, graphql } from 'react-relay'
+import { useSnackbar } from 'notistack'
+import { useFragment, graphql, useMutation } from 'react-relay'
+import { useNavigate } from 'react-router-dom'
+import { RoomHeaderCallRoomCreateMutation } from './__generated__/RoomHeaderCallRoomCreateMutation.graphql'
 import { RoomHeader_room$key } from './__generated__/RoomHeader_room.graphql'
-import { Link } from 'react-router-dom'
 
 type RoomHeaderProps = {
   roomRef: RoomHeader_room$key
@@ -13,10 +15,40 @@ const RoomHeader: React.FC<RoomHeaderProps> = ({ roomRef }) => {
     graphql`
       fragment RoomHeader_room on Room {
         name
+        participants {
+          id
+        }
       }
     `,
     roomRef
   )
+
+  const { enqueueSnackbar } = useSnackbar()
+  const navigate = useNavigate()
+  const [createCallRoomCommit] = useMutation<RoomHeaderCallRoomCreateMutation>(graphql`
+    mutation RoomHeaderCallRoomCreateMutation($input: CallRoomCreateInput!) {
+      callRoomCreate(input: $input) {
+        callRoom {
+          id
+        }
+      }
+    }
+  `)
+
+  const handleVideoCall = () => {
+    createCallRoomCommit({
+      variables: {
+        input: {
+          guestId: room.participants[0].id
+        }
+      },
+      onCompleted: (res, errors) => {
+        if (errors?.length) return errors.forEach(error => enqueueSnackbar(error.message, { variant: 'error' }))
+
+        navigate(`/app/call/host/${res.callRoomCreate?.callRoom?.id}`)
+      }
+    })
+  }
 
   return (
     <Toolbar>
@@ -25,7 +57,7 @@ const RoomHeader: React.FC<RoomHeaderProps> = ({ roomRef }) => {
       <IconButton color='primary' disabled>
         <Call />
       </IconButton>
-      <IconButton color='primary' component={Link} to='/app/call'>
+      <IconButton color='primary' onClick={handleVideoCall}>
         <Videocam />
       </IconButton>
       <IconButton color='primary' disabled>

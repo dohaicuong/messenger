@@ -1,5 +1,6 @@
 import { Grid } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
+import { useUserMedia } from './useUserMedia'
 
 const configuration = {'iceServers': [{'urls': 'stun:stun.l.google.com:19302'}]}
 
@@ -71,11 +72,6 @@ const CallPage = () => {
       })
       remotePeerConnection.addEventListener('icegatheringstatechange', async event => {
         if(remotePeerConnection.iceGatheringState === 'complete') {
-          console.log({
-            _answer,
-            _candidates
-          })
-
           await localPeerConnection?.setRemoteDescription(new RTCSessionDescription(_answer))
           for (const candidate of _candidates) {
             await localPeerConnection?.addIceCandidate(candidate)
@@ -121,19 +117,6 @@ const CallPage = () => {
 }
 
 export default CallPage
-
-const useUserMedia = (constraints?: MediaStreamConstraints | undefined) => {
-  const [stream, setStream] = useState<MediaStream>()
-  const [error, setError] = useState()
-
-  useEffect(() => {
-    navigator.mediaDevices.getUserMedia(constraints)
-      .then(setStream)
-      .catch(setError)
-  }, [constraints?.video, constraints?.audio, constraints?.peerIdentity, constraints?.preferCurrentTab])
-
-  return [stream, error]
-}
 
 const usePeerConnection = (configuration?: RTCConfiguration, tracks?: MediaStreamTrack[])
 : [RTCPeerConnection | undefined, RTCSessionDescriptionInit | undefined, RTCIceCandidate[] | undefined] => {

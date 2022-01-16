@@ -5,6 +5,12 @@ import relay from 'vite-plugin-relay'
 export default defineConfig({
   server: {
     https: true,
+    proxy: {
+      '/graphql': {
+        target: 'http://0.0.0.0:4000',
+        ws: true,
+      }
+    }
   },
   define: {
     global: {

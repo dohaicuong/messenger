@@ -29,15 +29,18 @@
   },
   "devDependencies": {
     "@types/emoji-mart": "^3.0.9",
+    "@types/jest": "^27.4.0",
     "@types/react": "^17.0.33",
     "@types/react-dom": "^17.0.10",
     "@types/react-relay": "^11.0.3",
     "@types/relay-runtime": "^12.0.1",
     "@vitejs/plugin-react": "^1.0.7",
     "graphql": "^15.8.0",
+    "jest": "^27.4.6",
     "relay-compiler": "^12.0.0",
     "relay-compiler-language-typescript": "^15.0.0",
     "relay-config": "^12.0.1",
+    "ts-jest": "^27.1.2",
     "typescript": "^4.4.4",
     "vite": "^2.7.2"
   }

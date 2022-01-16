@@ -2,6 +2,54 @@
 ### Do not make changes to this file directly
 
 
+input CallJoinInput {
+  answer: String!
+  iceCandidates: [String!]!
+  roomId: RelayId!
+}
+
+type CallJoinPayload {
+  callRoom: CallRoom
+}
+
+input CallJoinedInput {
+  callRoomId: RelayId!
+}
+
+type CallJoinedPayload {
+  callRoom: CallRoom
+}
+
+type CallRoom implements Node {
+  answer: String
+  guest: User
+  guestIceCandidates: [String!]!
+  host: User!
+  hostIceCandidates: [String!]!
+
+  """Relay ID"""
+  id: ID!
+  offer: String
+}
+
+input CallRoomCreateInput {
+  guestId: RelayId!
+}
+
+type CallRoomCreatePayload {
+  callRoom: CallRoom
+}
+
+input CallStartInput {
+  iceCandidates: [String!]!
+  offer: String!
+  roomId: RelayId!
+}
+
+type CallStartPayload {
+  callRoom: CallRoom
+}
+
 type Message implements Node {
   author: User!
   content: String!
@@ -48,6 +96,9 @@ type MessageSentPayload {
 }
 
 type Mutation {
+  callJoin(input: CallJoinInput!): CallJoinPayload
+  callRoomCreate(input: CallRoomCreateInput!): CallRoomCreatePayload
+  callStart(input: CallStartInput!): CallStartPayload
   login(input: UserLoginInput!): UserLoginPayload!
   messageSend(input: MessageSendInput!): MessageSendPayload
   roomAddUser(input: RoomAddUserInput!): RoomAddUserPayload
@@ -158,6 +209,7 @@ type RoomEdge {
 }
 
 type Subscription {
+  callJoined(input: CallJoinedInput!): CallJoinedPayload
   messageSent(input: MessageSentInput!): MessageSentPayload
 }
 
