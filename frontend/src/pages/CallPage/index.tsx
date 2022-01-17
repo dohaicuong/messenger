@@ -56,7 +56,6 @@ const CallPage = () => {
       })
     }
   }, [localPeerConnection?.connectionState])
-
   
   useEffect(() => {
     const start = async () => {
