@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material'
 import { useSnackbar } from 'notistack'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLazyLoadQuery, graphql, useMutation } from 'react-relay'
 import { useParams } from 'react-router-dom'
 import { usePeerConnection } from './usePeerConnection'
@@ -20,6 +20,49 @@ const Guest = () => {
   const [localStream] = useUserMedia({ video: true, audio: false })
   useStreamToVideo(localVideoRef.current, localStream)
 
+  const [callJoinCommit] = useMutation<GuestCallJoinMutation>(graphql`
+    mutation GuestCallJoinMutation($input: CallJoinInput!) {
+      callJoin(input: $input) {
+        callRoom {
+          id
+        }
+      }
+    }
+  `)
+  const [offer, hostIceCandidates] = useRoomOffer(roomId)
+  const [remoteStream] = useGuestSignalling(
+    peerConnection, localStream, offer, hostIceCandidates,
+    ({ answer, candidates }) => {
+      callJoinCommit({
+        variables: {
+          input: {
+            roomId,
+            answer: JSON.stringify(answer),
+            iceCandidates: candidates.map(candidate => JSON.stringify(candidate))
+          }
+        },
+        onCompleted: (res, errors) => {
+          console.log(res, errors)
+          if (errors?.length) return errors.forEach(error => enqueueSnackbar(error.message, { variant: 'error' }))
+
+          console.log(res.callJoin?.callRoom)
+        }
+      })
+    }
+  )
+  useStreamToVideo(remoteVideoRef.current, remoteStream)
+  
+  return (
+    <Grid container spacing={2} marginTop={4}>
+      <Grid item xs={6} component='video' ref={localVideoRef} autoPlay playsInline height={300} />
+      <Grid item xs={6} component='video' ref={remoteVideoRef} autoPlay playsInline height={300} />
+    </Grid>
+  )
+}
+
+export default Guest
+
+const useRoomOffer = (roomId?: string): [string | undefined, string[] | undefined] => {
   const data = useLazyLoadQuery<GuestCallRoomQuery>(
     graphql`
       query GuestCallRoomQuery($id: ID!) {
@@ -33,18 +76,22 @@ const Guest = () => {
     `,
     { id: roomId || '' }
   )
-  const offer = data.node?.offer
-  const hostIceCandidates = data.node?.hostIceCandidates
-  
-  const [callJoinCommit] = useMutation<GuestCallJoinMutation>(graphql`
-    mutation GuestCallJoinMutation($input: CallJoinInput!) {
-      callJoin(input: $input) {
-        callRoom {
-          id
-        }
-      }
-    }
-  `)
+  const offer = data.node?.offer || undefined
+  const hostIceCandidates = data.node?.hostIceCandidates ? Array.from(data.node?.hostIceCandidates) : undefined
+
+  return [offer, hostIceCandidates]
+}
+
+const useGuestSignalling = (
+  peerConnection?: RTCPeerConnection,
+  localStream?: MediaStream,
+  offer?: string,
+  hostIceCandidates?: string[],
+  onDoneGather?: (payload: { answer: RTCSessionDescriptionInit, candidates: RTCIceCandidate[] }) => void,
+  onRemoteStream?: (stream?: MediaStream) => void,
+) => {
+  const [remoteStream, setRemoteStream] = useState<MediaStream>()
+
   useEffect(() => {
     const start = async () => {
       if (!peerConnection || !offer || !hostIceCandidates?.length || !localStream) return
@@ -59,26 +106,13 @@ const Guest = () => {
       })
       peerConnection.addEventListener('icegatheringstatechange', async event => {
         if(peerConnection.iceGatheringState === 'complete') {
-          callJoinCommit({
-            variables: {
-              input: {
-                roomId,
-                answer: JSON.stringify(answer),
-                iceCandidates: candidates.map(candidate => JSON.stringify(candidate))
-              }
-            },
-            onCompleted: (res, errors) => {
-              console.log(res, errors)
-              if (errors?.length) return errors.forEach(error => enqueueSnackbar(error.message, { variant: 'error' }))
-  
-              console.log(res.callJoin?.callRoom)
-            }
-          })
+          onDoneGather?.({ answer, candidates })
         }
       })
       peerConnection.addEventListener('track', event => {
         const stream = event.streams?.[0] || new MediaStream([event.track])
-        remoteVideoRef.current!.srcObject = stream
+        onRemoteStream?.(stream)
+        setRemoteStream(stream)
       })
 
       await peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(offer)))
@@ -93,12 +127,5 @@ const Guest = () => {
     start()
   }, [offer, localStream?.id])
 
-  return (
-    <Grid container spacing={2} marginTop={4}>
-      <Grid item xs={6} component='video' ref={localVideoRef} autoPlay playsInline height={300} />
-      <Grid item xs={6} component='video' ref={remoteVideoRef} autoPlay playsInline height={300} />
-    </Grid>
-  )
+  return [remoteStream]
 }
-
-export default Guest

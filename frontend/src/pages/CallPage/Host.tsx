@@ -21,46 +21,8 @@ const Host = () => {
   const [localStream] = useUserMedia({ video: true, audio: false })
   useStreamToVideo(localVideoRef.current, localStream)
 
-  const [serverSignal, setServerSignal] = useState<{ answer?: string, guestIceCandidates?: string[] }>({
-    answer: undefined,
-    guestIceCandidates: undefined
-  })
-  const config = useMemo(
-    () => {
-      return {
-        subscription: CallJoinedSubscriptionQuery,
-        variables: {
-          input: { callRoomId: roomId }
-        },
-        onNext: async (res?: HostCallJoinedSubscriptionResponse | null) => {
-          if (!res?.callJoined?.callRoom) return
-
-          const { answer, guestIceCandidates } = res.callJoined.callRoom
-          if(!answer) return
-          setServerSignal({
-            answer,
-            guestIceCandidates: Array.from(guestIceCandidates)
-          })
-
-          console.log({ answer, guestIceCandidates })
-        }
-      }
-    },
-    [roomId, CallJoinedSubscriptionQuery]
-  )
-  useSubscription<HostCallJoinedSubscription>(config)
-  useEffect(() => {
-    const start = async () => {
-      if(!peerConnection || !serverSignal.answer || !serverSignal.guestIceCandidates?.length) return
-
-      const { answer, guestIceCandidates } = serverSignal
-      peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(answer)))
-      for (const candidate of guestIceCandidates) {
-        await peerConnection?.addIceCandidate(JSON.parse(candidate))
-      }
-    }
-    start()
-  }, [serverSignal.answer, serverSignal.guestIceCandidates?.length])
+  const [answer, guestIceCandidates] = useWaitForJoinedCall(roomId || '')
+  useProcessAnswer(peerConnection, answer, guestIceCandidates)
 
   const [callStartCommit] = useMutation<HostCallStartMutation>(graphql`
     mutation HostCallStartMutation($input: CallStartInput!) {
@@ -71,54 +33,26 @@ const Host = () => {
       }
     }
   `)
-  // const [offer, localCandidates] = useLocalSignalling(peerConnection, localStream)
-
-  const [remoteStream, setRemoteStream] = useState<MediaStream>()
-  useEffect(() => {
-    const start = async () => {
-      if(!localStream || !peerConnection) return
-
-      const tracks = localStream?.getTracks()
-      tracks?.forEach(track => peerConnection.addTrack(track))
-
-      let offer: RTCSessionDescriptionInit
-      const candidates: RTCIceCandidate[] = []
-      peerConnection.addEventListener('icecandidate', event => {
-        if(event.candidate) candidates.push(event.candidate)
-      })
-      peerConnection.addEventListener('icegatheringstatechange', event => {
-        if(peerConnection.iceGatheringState === 'complete') {
-          console.log({ offer, candidates })
-          callStartCommit({
-            variables: {
-              input: {
-                roomId,
-                offer: JSON.stringify(offer),
-                iceCandidates: candidates.map(candidate => JSON.stringify(candidate))
-              }
-            },
-            onCompleted: (res, errors) => {
-              if (errors?.length) return errors.forEach(error => enqueueSnackbar(error.message, { variant: 'error' }))
-            }
-          })
+  const [remoteStream] = useHostSignalling(
+    peerConnection,
+    localStream,
+    ({ offer, candidates }) => {
+      console.log({ offer, candidates })
+      callStartCommit({
+        variables: {
+          input: {
+            roomId,
+            offer: JSON.stringify(offer),
+            iceCandidates: candidates.map(candidate => JSON.stringify(candidate))
+          }
+        },
+        onCompleted: (res, errors) => {
+          if (errors?.length) return errors.forEach(error => enqueueSnackbar(error.message, { variant: 'error' }))
         }
       })
-      peerConnection.addEventListener('track', event => {
-        const stream = event.streams?.[0] || new MediaStream([event.track])
-        setRemoteStream(stream)
-      })
-
-      offer = await peerConnection.createOffer()
-      await peerConnection.setLocalDescription(offer)
     }
-    start()
-  }, [localStream?.id])
-
-  useEffect(() => {
-    if(!remoteVideoRef.current || !remoteStream) return
-
-    remoteVideoRef.current.srcObject = remoteStream
-  }, [Boolean(remoteStream)])
+  )
+  useStreamToVideo(remoteVideoRef.current, remoteStream)
 
   return (
     <Grid container spacing={2} marginTop={4}>
@@ -140,3 +74,86 @@ const CallJoinedSubscriptionQuery = graphql`
     }
   }
 `
+
+const useWaitForJoinedCall = (callRoomId: string): [string | undefined, string[] | undefined] => {
+  const [answer, setAnswer] = useState<string>()
+  const [candidates, setCandidates] = useState<string[]>()
+
+  const config = useMemo(
+    () => {
+      return {
+        subscription: CallJoinedSubscriptionQuery,
+        variables: {
+          input: { callRoomId }
+        },
+        onNext: async (res?: HostCallJoinedSubscriptionResponse | null) => {
+          if (!res?.callJoined?.callRoom) return
+
+          const { answer, guestIceCandidates } = res.callJoined.callRoom
+          if(!answer) return
+
+          setAnswer(answer)
+          setCandidates(Array.from(guestIceCandidates))
+        }
+      }
+    },
+    [callRoomId, CallJoinedSubscriptionQuery]
+  )
+  useSubscription<HostCallJoinedSubscription>(config)
+
+  return [answer, candidates]
+}
+
+const useProcessAnswer = (peerConnection?: RTCPeerConnection, answer?: string, iceCandidates?: string[]) => {
+  useEffect(() => {
+    const start = async () => {
+      if(!peerConnection || !answer || !iceCandidates?.length) return
+
+      peerConnection.setRemoteDescription(new RTCSessionDescription(JSON.parse(answer)))
+      for (const candidate of iceCandidates) {
+        await peerConnection?.addIceCandidate(JSON.parse(candidate))
+      }
+    }
+    start()
+  }, [answer, iceCandidates?.length])
+}
+
+const useHostSignalling = (
+  peerConnection?: RTCPeerConnection,
+  localStream?: MediaStream,
+  onDoneGather?: (payload: { offer: RTCSessionDescriptionInit, candidates: RTCIceCandidate[] }) => void,
+  onRemoteStream?: (stream?: MediaStream) => void,
+) => {
+  const [remoteStream, setRemoteStream] = useState<MediaStream>()
+  
+  useEffect(() => {
+    const start = async () => {
+      if(!localStream || !peerConnection) return
+
+      const tracks = localStream?.getTracks()
+      tracks?.forEach(track => peerConnection.addTrack(track))
+
+      let offer: RTCSessionDescriptionInit
+      const candidates: RTCIceCandidate[] = []
+      peerConnection.addEventListener('icecandidate', event => {
+        if(event.candidate) candidates.push(event.candidate)
+      })
+      peerConnection.addEventListener('icegatheringstatechange', event => {
+        if(peerConnection.iceGatheringState === 'complete') {
+          onDoneGather?.({ offer, candidates })
+        }
+      })
+      peerConnection.addEventListener('track', event => {
+        const stream = event.streams?.[0] || new MediaStream([event.track])
+        onRemoteStream?.(stream)
+        setRemoteStream(stream)
+      })
+
+      offer = await peerConnection.createOffer()
+      await peerConnection.setLocalDescription(offer)
+    }
+    start()
+  }, [localStream?.id])
+
+  return [remoteStream]
+}
