@@ -23,7 +23,7 @@ export const CallJoinMutation = extendType({
     t.field('callJoin', {
       args: { input: nonNull('CallJoinInput') },
       type: 'CallJoinPayload',
-      resolve: async (_, { input }, { prisma, userId }) => {
+      resolve: async (_, { input }, { prisma, userId, pubsub }) => {
         if (!userId) throw new Error('Please login!')
 
         const user = await prisma.user.findUnique({ where: { id: userId }})
